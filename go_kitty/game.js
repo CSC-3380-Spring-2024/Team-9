@@ -2,10 +2,14 @@ class Game {
   constructor(canvas, context) {
     this.canvas = canvas;
     this.ctx = context;
+    this.pixelRatio = window.devicePixelRatio || 1;
     this.width = this.canvas.width;
     this.height = this.canvas.height;
+    this.baseHeight = 720;
+    this.ratio = this.height / this.baseHeight;
+    this.background = new Background(this);
     this.player = new Player(this);
-    this.gravity = 1.5;
+    this.gravity;
     this.mouse = {
       x: undefined,
       y: undefined,
@@ -31,6 +35,12 @@ class Game {
     this.controller.addButton(this.lBtn);
     this.controller.addButton(this.rBtn);
     this.controller.addButton(this.jBtn);
+
+    this.resize(window.innerWidth, window.innerHeight);
+
+    window.addEventListener('resize', e => {
+      this.resize(window.innerWidth, window.innerHeight);
+    });
 
     window.addEventListener('keydown', (event) => {
       switch (event.key) {
@@ -68,6 +78,20 @@ class Game {
     window.addEventListener('touchend', e => {
       this.controller.touchEnd(e);
     });
+  }
+  resize(width, height) {
+    this.canvas.width = width * this.pixelRatio;
+    this.canvas.height = height * this.pixelRatio;
+    this.ctx.scale(this.pixelRatio, this.pixelRatio);
+    this.width = width;
+    this.height = height;
+    this.ratio = this.height / this.baseHeight;
+    this.gravity = 1.5 * this.ratio;
+    this.background.resize();
+    this.controller.buttons.forEach(button => {
+      button.resize();
+    });
+    this.player.resize();
   }
   checkCollision(rect1, rect2) {
     return (
