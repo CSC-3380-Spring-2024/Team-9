@@ -29,11 +29,11 @@ class Background {
   }
 
   moveLeft() {
-    this.speed.x = -5 * this.game.ratio;
+    this.position.x -= 5 * this.game.ratio;
   }
 
   moveRight() {
-    this.speed.x = 5 * this.game.ratio;
+    this.position.x += 5 * this.game.ratio;
   }
 
   fullStop() {
