@@ -1,5 +1,6 @@
 class Button {
-  constructor(x, y, width, height, color) {
+  constructor(x, y, width, height, color, game) {
+    this.game = game;
     this.active = false;
     this.color = color;
     this.height = height;
