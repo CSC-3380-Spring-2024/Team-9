@@ -10,6 +10,17 @@ class Game {
     this.background = new Background(this);
     this.player = new Player(this);
     this.gravity;
+    this.orientationMessage = document.createElement('div');
+    this.orientationMessage.style.color = 'black';
+    this.orientationMessage.innerText = 'Please rotate your device to landscape mode.';
+    this.orientationMessage.style.position = 'absolute';
+    this.orientationMessage.style.top = '50%';
+    this.orientationMessage.style.left = '50%';
+    this.orientationMessage.style.transform = 'translate(-50%, -50%)';
+    this.orientationMessage.style.fontSize = '24px';
+    this.orientationMessage.style.textAlign = 'center';
+    this.orientationMessage.style.display = 'none';
+    document.body.appendChild(this.orientationMessage);
     this.mouse = {
       x: undefined,
       y: undefined,
@@ -76,6 +87,19 @@ class Game {
     window.addEventListener('touchend', e => {
       this.controller.touchEnd(e);
     });
+    window.addEventListener('orientationchange', () => {
+      this.handleOrientationChange();
+    });
+  }
+  handleOrientationChange() {
+    if (window.orientation === 0) { // Portrait mode
+      this.canvas.style.display = 'none';
+      this.orientationMessage.style.display = 'block';
+    } else { // Landscape mode
+      this.canvas.style.display = 'block';
+      this.orientationMessage.style.display = 'none';
+      this.resize(window.innerWidth, window.innerHeight);
+    }
   }
   resize(width, height) {
     this.canvas.width = width * this.pixelRatio;
@@ -97,6 +121,9 @@ class Game {
     );
   }
   render() {
+    if (window.orientation === 0) {
+      this.handleOrientationChange();
+    }
     if (this.keys.d.pressed && this.player.position.x < 400) {
       console.log('what');
       this.player.moveRight();
