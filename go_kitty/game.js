@@ -38,7 +38,6 @@ class Game {
 
     window.addEventListener('resize', e => {
       this.resize(window.innerWidth, window.innerHeight);
-      //this.resize(e.currentTarget.innerWidth, e.currentTarget.innerHeight);
     });
 
     window.addEventListener('keydown', (event) => {
@@ -79,12 +78,6 @@ class Game {
     });
   }
   resize(width, height) {
-    /*
-    this.canvas.width = width;
-    this.canvas.height = height;
-    this.width = this.canvas.width;
-    this.height = this.canvas.height;
-    */
     this.canvas.width = width * this.pixelRatio;
     this.canvas.height = height * this.pixelRatio;
     this.ctx.scale(this.pixelRatio, this.pixelRatio);
@@ -104,8 +97,8 @@ class Game {
     );
   }
   render() {
-    
     if (this.keys.d.pressed && this.player.position.x < 400) {
+      console.log('what');
       this.player.moveRight();
     } else if (this.keys.a.pressed && this.player.position.x > 100) {
       this.player.moveLeft();
@@ -124,11 +117,8 @@ class Game {
         this.background.moveRight();
       } else if (this.rBtn.active) {
         this.background.moveLeft();
-      } else {
-        this.background.fullStop();
       }
     }
-
     this.background.update();
     this.background.draw();
 
@@ -138,6 +128,8 @@ class Game {
 
     this.player.update();
     this.player.draw();
+
+    
   }
 }
 
