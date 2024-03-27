@@ -11,32 +11,34 @@ class Player {
     };
     this.width = 100;
     this.height = 100;
+    this.scaledX;
+    this.scaledY;
     this.scaledWidth;
     this.scaledHeight;
   }
 
   draw() {
-    this.game.ctx.fillStyle = 'pink';
-    this.game.ctx.fillRect(this.position.x, this.position.y, this.scaledWidth, this.scaledHeight);
+    this.game.ctx.fillStyle = 'black';
+    this.game.ctx.fillRect(this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
   }
 
   update() {
-    this.position.x += this.speed.x;
-    this.position.y += this.speed.y;
+    this.scaledX += this.speed.x;
+    this.scaledY += this.speed.y;
     if (!this.isTouchingBottom()) {
       this.speed.y += this.game.gravity;
     } else {
-      this.position.y = this.game.height - this.scaledHeight;
+      this.scaledY = this.game.height - this.scaledHeight;
       this.speed.y = 0;
     }
   }
 
   isTouchingBottom() {
-    return this.position.y >= this.game.height - this.scaledHeight;
+    return this.scaledY >= this.game.height - this.scaledHeight;
   }
 
   jump() {
-    if (this.isTouchingBottom()) {
+    if (this.speed.y === 0) {
       this.speed.y = -30 * this.game.ratio;
     }
   }
@@ -56,5 +58,7 @@ class Player {
   resize() {
     this.scaledWidth = this.width * this.game.ratio;
     this.scaledHeight = this.height * this.game.ratio;
+    this.scaledX = this.position.x * this.game.ratio;
+    this.scaledY = this.position.y * this.game.ratio;
   }
 }
