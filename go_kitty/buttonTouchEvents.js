@@ -9,20 +9,44 @@ class Button {
     this.scaledWidth;
     this.x = x;
     this.y = y;
+    this.scaledX;
+    this.scaledY;
+    this.initialX = x;
+    this.initialY = y;
   }
 
   containsPoint(x, y) {
-    return (x >= this.x && x <= this.x + this.scaledWidth && y >= this.y && y <= this.y + this.scaledHeight);
+    return (x >= this.scaledX && x <= this.scaledX + this.scaledWidth && y >= this.scaledY && y <= this.scaledY + this.scaledHeight);
   }
 
   draw() {
     this.game.ctx.fillStyle = this.color;
-    this.game.ctx.fillRect(this.x, this.y, this.scaledWidth, this.scaledHeight);
+    this.game.ctx.fillRect(this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
   }
 
   resize() {
+    const relativeSpacingX = this.initialX / this.game.baseWidth;
+    const relativeSpacingY = this.initialY / this.game.baseHeight;
     this.scaledHeight = this.height * this.game.ratio;
     this.scaledWidth = this.width * this.game.ratio;
+    const minDistanceX = this.game.width * 0.01;
+    const minDistanceY = this.game.height * 0.01;
+    const actualDistanceX = minDistanceX * (this.game.baseWidth / this.game.width);
+    const actualDistanceY = minDistanceY * (this.game.baseHeight / this.game.height);
+    let minX = this.game.width * relativeSpacingX - this.scaledWidth;
+    let minY = this.game.height * relativeSpacingY - this.scaledHeight;
+    for (const button of this.game.controller.buttons) {
+      if (button !== this) {
+        const diffX = Math.abs(button.scaledX - minX);
+        const diffY = Math.abs(button.scaledY - minY);
+        if (diffX < this.scaledWidth && diffY < this.scaledHeight) {
+          minX = button.scaledX + this.scaledWidth + actualDistanceX;
+        }
+      }
+    }
+  
+    this.scaledX = Math.max(minX, actualDistanceX);
+    this.scaledY = Math.max(minY, actualDistanceY);
   }
 }
 
