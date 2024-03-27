@@ -6,9 +6,15 @@ class Game {
     this.width = this.canvas.width;
     this.height = this.canvas.height;
     this.baseHeight = 720;
+    this.baseWidth = 1700;
     this.ratio = this.height / this.baseHeight;
     this.background = new Background(this);
     this.player = new Player(this);
+    this.platforms = [
+      new Platform(this, 0, 469, 700, 250),
+      new Platform(this, 699, 469, 700, 250),
+      new Platform(this, 700 * 2 - 2, 469, 700, 250)
+    ];
     this.gravity;
     this.orientationMessage = document.createElement('div');
     this.orientationMessage.style.color = 'black';
@@ -39,9 +45,11 @@ class Game {
     };
     this.controller = new ButtonController();
     
-    this.lBtn = new Button(100, 100, 100, 100, "purple", this);
-    this.rBtn = new Button(300, 100, 100, 100, "red", this);
-    this.jBtn = new Button(500, 100, 100, 100, "grey", this);
+    this.lBtn = new Button(300, 676, 160, 160, "purple", this);
+    this.rBtn = new Button(600, 676, 160, 160, "red", this);
+    this.jBtn = new Button(1570, 676, 160, 160, "grey", this);
+    
+    
     this.controller.addButton(this.lBtn);
     this.controller.addButton(this.rBtn);
     this.controller.addButton(this.jBtn);
@@ -92,10 +100,10 @@ class Game {
     });
   }
   handleOrientationChange() {
-    if (window.orientation === 0) { // Portrait mode
+    if (window.orientation === 0) {
       this.canvas.style.display = 'none';
       this.orientationMessage.style.display = 'block';
-    } else { // Landscape mode
+    } else {
       this.canvas.style.display = 'block';
       this.orientationMessage.style.display = 'none';
       this.resize(window.innerWidth, window.innerHeight);
@@ -107,47 +115,32 @@ class Game {
     this.ctx.scale(this.pixelRatio, this.pixelRatio);
     this.width = width;
     this.height = height;
+    this.buttonRatio = this.width / this.baseWidth;
     this.ratio = this.height / this.baseHeight;
     this.gravity = 1.5 * this.ratio;
     this.background.resize();
+    this.platforms.forEach((platform) => {
+      platform.resize();
+    });
     this.controller.buttons.forEach(button => {
       button.resize();
     });
     this.player.resize();
   }
-  checkCollision(rect1, rect2) {
+  checkCollision(player, platform) {
     return (
-      rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y
+      player.scaledY + player.scaledHeight <= platform.scaledY && player.scaledY + player.scaledHeight + player.speed.y >= platform.scaledY && player.scaledX + player.scaledWidth >= platform.scaledX && player.scaledX <= platform.scaledX + platform.scaledWidth
     );
   }
   render() {
     if (window.orientation === 0) {
       this.handleOrientationChange();
     }
-    if (this.keys.d.pressed && this.player.position.x < 400) {
-      console.log('what');
-      this.player.moveRight();
-    } else if (this.keys.a.pressed && this.player.position.x > 100) {
-      this.player.moveLeft();
-    } else if (this.lBtn.active && this.player.position.x > 100) {
-      this.player.moveLeft();
-    } else if (this.rBtn.active && this.player.position.x < 400) {
-      this.player.moveRight();
-    } else {
-      this.player.fullStop();
-
-      if (this.keys.d.pressed) {
-        this.background.moveLeft();
-      } else if (this.keys.a.pressed) {
-        this.background.moveRight();
-      } else if (this.lBtn.active) {
-        this.background.moveRight();
-      } else if (this.rBtn.active) {
-        this.background.moveLeft();
-      }
-    }
-    this.background.update();
     this.background.draw();
+
+    this.platforms.forEach((platform) => {
+      platform.draw();
+    });
 
     this.controller.buttons.forEach(button => {
       button.draw();
@@ -155,6 +148,45 @@ class Game {
 
     this.player.update();
     this.player.draw();
+    if (this.keys.d.pressed && this.player.scaledX < 400 * this.ratio) {
+      this.player.moveRight();
+    } else if (this.keys.a.pressed && this.player.scaledX > 100 * this.ratio) {
+      this.player.moveLeft();
+    } else if (this.lBtn.active && this.player.scaledX > 100 * this.ratio) {
+      this.player.moveLeft();
+    } else if (this.rBtn.active && this.player.scaledX < 400 * this.ratio) {
+      this.player.moveRight();
+    } else {
+      this.player.fullStop();
+
+      if (this.keys.d.pressed) {
+        this.background.moveLeft();
+        this.platforms.forEach((platform) => {
+          platform.moveLeft();
+        });
+      } else if (this.keys.a.pressed) {
+        this.background.moveRight();
+        this.platforms.forEach((platform) => {
+          platform.moveRight();
+        });
+      } else if (this.lBtn.active) {
+        this.background.moveRight();
+        this.platforms.forEach((platform) => {
+          platform.moveRight();
+        });
+      } else if (this.rBtn.active) {
+        this.background.moveLeft();
+        this.platforms.forEach((platform) => {
+          platform.moveLeft();
+        });
+      }
+    }
+    
+    this.platforms.forEach((platform) => {
+      if (this.checkCollision(this.player, platform)) {
+        this.player.speed.y = 0;
+      }
+    });
 
     
   }
@@ -165,7 +197,6 @@ window.addEventListener('load', function() {
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-
 
   const game = new Game(canvas, ctx);
   
