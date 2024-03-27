@@ -1,7 +1,7 @@
 class Background {
   constructor(game) {
     this.game = game;
-    this.width = 1000;
+    this.width = 1700;
     this.height = this.game.baseHeight;
     this.scaledWidth;
     this.scaledHeight;
@@ -11,10 +11,6 @@ class Background {
     this.speed = {
       x: 0
     };
-  }
-  update() {
-    this.position.x += this.speed.x;
-    console.log(this.position.x);
   }
 
   draw() {
@@ -34,9 +30,5 @@ class Background {
 
   moveRight() {
     this.position.x += 5 * this.game.ratio;
-  }
-
-  fullStop() {
-    this.speed.x = 0;
   }
 }
