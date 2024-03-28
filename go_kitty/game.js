@@ -10,12 +10,14 @@ class Game {
     this.ratio = this.height / this.baseHeight;
     this.background = new Background(this);
     this.player = new Player(this);
+    this.coins = [];
     this.platforms = [
-      new Platform(this, 0, 469, 700, 250),
-      new Platform(this, 699, 469, 700, 250),
-      new Platform(this, 700 * 2 - 2, 469, 700, 250)
+      new Platform(this, 0, 470, 700, 250),
+      new Platform(this, 699, 470, 700, 250),
+      new Platform(this, 700 * 2 - 2, 470, 700, 250)
     ];
     this.gravity;
+    this.score = 0;
     this.orientationMessage = document.createElement('div');
     this.orientationMessage.style.color = 'black';
     this.orientationMessage.innerText = 'Please rotate your device to landscape mode.';
@@ -45,9 +47,9 @@ class Game {
     };
     this.controller = new ButtonController();
     
-    this.lBtn = new Button(300, 676, 160, 160, "purple", this);
-    this.rBtn = new Button(600, 676, 160, 160, "red", this);
-    this.jBtn = new Button(1570, 676, 160, 160, "grey", this);
+    this.lBtn = new Button(400, 676, 170, 170, "purple", this);
+    this.rBtn = new Button(700, 676, 170, 170, "red", this);
+    this.jBtn = new Button(1500, 676, 170, 170, "grey", this);
     
     
     this.controller.addButton(this.lBtn);
@@ -118,6 +120,13 @@ class Game {
     this.buttonRatio = this.width / this.baseWidth;
     this.ratio = this.height / this.baseHeight;
     this.gravity = 1.5 * this.ratio;
+    this.coins = [
+      new Coins(this, 700, 380),
+      new Coins(this, 1000, 100),
+      new Coins(this, 1300, 250),
+      new Coins(this, 1700, 310),
+      new Coins(this, 2000, 180)
+    ];
     this.background.resize();
     this.platforms.forEach((platform) => {
       platform.resize();
@@ -126,17 +135,39 @@ class Game {
       button.resize();
     });
     this.player.resize();
+    this.coins.forEach((coin) => {
+      coin.resize();
+    });
   }
   checkCollision(player, platform) {
     return (
       player.scaledY + player.scaledHeight <= platform.scaledY && player.scaledY + player.scaledHeight + player.speed.y >= platform.scaledY && player.scaledX + player.scaledWidth >= platform.scaledX && player.scaledX <= platform.scaledX + platform.scaledWidth
     );
   }
+  isCollected(rect1, rect2) {
+    return (
+      rect1.scaledX < rect2.scaledX + rect2.scaledWidth && rect1.scaledX + rect1.scaledWidth > rect2.scaledX && rect1.scaledY < rect2.scaledY + rect2.scaledHeight && rect1.scaledY + rect1.scaledHeight > rect2.scaledY
+    );
+  }
+  drawScoreText() {
+    this.ctx.save();
+    this.ctx.fillStyle = 'magenta';
+    this.ctx.font = 'bold 33px Poppins, sans-serif';
+    this.ctx.fillText(`score: ${this.score}`, 40 * this.ratio, 80 * this.ratio);
+    this.ctx.restore();
+  }
   render() {
     if (window.orientation === 0) {
       this.handleOrientationChange();
     }
     this.background.draw();
+
+    this.drawScoreText();
+
+    this.coins.forEach((coin) => {
+      coin.update();
+      coin.draw();
+    });
 
     this.platforms.forEach((platform) => {
       platform.draw();
@@ -164,20 +195,32 @@ class Game {
         this.platforms.forEach((platform) => {
           platform.moveLeft();
         });
+        this.coins.forEach((coin) => {
+          coin.moveLeft();
+        });
       } else if (this.keys.a.pressed) {
         this.background.moveRight();
         this.platforms.forEach((platform) => {
           platform.moveRight();
+        });
+        this.coins.forEach((coin) => {
+          coin.moveRight();
         });
       } else if (this.lBtn.active) {
         this.background.moveRight();
         this.platforms.forEach((platform) => {
           platform.moveRight();
         });
+        this.coins.forEach((coin) => {
+          coin.moveRight();
+        });
       } else if (this.rBtn.active) {
         this.background.moveLeft();
         this.platforms.forEach((platform) => {
           platform.moveLeft();
+        });
+        this.coins.forEach((coin) => {
+          coin.moveLeft();
         });
       }
     }
@@ -187,8 +230,6 @@ class Game {
         this.player.speed.y = 0;
       }
     });
-
-    
   }
 }
 
