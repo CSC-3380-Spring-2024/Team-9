@@ -17,7 +17,7 @@ class Game {
       new Platform(this, 700 * 2 - 2, 470, 700, 250)
     ];
     this.gravity;
-    this.score = 0;
+    this.score;
     this.orientationMessage = document.createElement('div');
     this.orientationMessage.style.color = 'black';
     this.orientationMessage.innerText = 'Please rotate your device to landscape mode.';
@@ -120,6 +120,7 @@ class Game {
     this.buttonRatio = this.width / this.baseWidth;
     this.ratio = this.height / this.baseHeight;
     this.gravity = 1.5 * this.ratio;
+    this.score = 0;
     this.coins = [
       new Coins(this, 700, 380),
       new Coins(this, 1000, 100),
