@@ -15,6 +15,7 @@ class Player {
     this.scaledY;
     this.scaledWidth;
     this.scaledHeight;
+    this.isJumping = false;
   }
 
   draw() {
@@ -25,11 +26,12 @@ class Player {
   update() {
     this.scaledX += this.speed.x;
     this.scaledY += this.speed.y;
+    console.log(this.speed.y);
+    if (this.speed.y === 0) {
+      this.isJumping = false;
+    }
     if (!this.isTouchingBottom()) {
       this.speed.y += this.game.gravity;
-    } else {
-      this.scaledY = this.game.height - this.scaledHeight;
-      this.speed.y = 0;
     }
   }
 
@@ -38,8 +40,9 @@ class Player {
   }
 
   jump() {
-    if (this.speed.y === 0) {
+    if (!this.isJumping && this.speed.y === 0) {
       this.speed.y = -30 * this.game.ratio;
+      this.isJumping = true;
     }
   }
 
