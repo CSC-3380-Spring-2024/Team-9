@@ -1,5 +1,5 @@
 class Button {
-  constructor(x, y, width, height, color, game) {
+  constructor(x, y, width, height, color, game, name) {
     this.game = game;
     this.active = false;
     this.color = color;
@@ -13,6 +13,7 @@ class Button {
     this.scaledY;
     this.initialX = x;
     this.initialY = y;
+    this.name = name;
   }
 
   containsPoint(x, y) {
@@ -47,6 +48,25 @@ class Button {
   
     this.scaledX = Math.max(minX, actualDistanceX);
     this.scaledY = Math.max(minY, actualDistanceY);
+  }
+
+  resizeButtons() {
+    if (this.name === 'left') {
+      this.scaledWidth = this.width * this.game.ratio;
+      this.scaledHeight = this.height * this.game.ratio;
+      this.scaledX = (this.game.width - this.scaledWidth) / 12;
+      this.scaledY = (this.game.height - this.scaledHeight) / 1.07;
+    } else if (this.name === 'right') {
+      this.scaledWidth = this.width * this.game.ratio;
+      this.scaledHeight = this.height * this.game.ratio;
+      this.scaledX = (this.game.width - this.scaledWidth) / 3.5;
+      this.scaledY = (this.game.height - this.scaledHeight) / 1.07;
+    } else if (this.name === 'jump') {
+      this.scaledWidth = this.width * this.game.ratio;
+      this.scaledHeight = this.height * this.game.ratio;
+      this.scaledX = (this.game.width - this.scaledWidth) / 1.1;
+      this.scaledY = (this.game.height - this.scaledHeight) / 1.07;
+    }
   }
 }
 
