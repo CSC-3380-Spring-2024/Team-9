@@ -50,9 +50,9 @@ class Game {
     };
     this.controller = new ButtonController();
     
-    this.lBtn = new Button(400, 676, 170, 170, "purple", this);
-    this.rBtn = new Button(700, 676, 170, 170, "red", this);
-    this.jBtn = new Button(1500, 676, 170, 170, "grey", this);
+    this.lBtn = new Button(400, 676, 170, 170, "purple", this, 'left');
+    this.rBtn = new Button(700, 676, 170, 170, "red", this, 'right');
+    this.jBtn = new Button(1500, 676, 170, 170, "grey", this, 'jump');
     
     
     this.controller.addButton(this.lBtn);
@@ -156,7 +156,7 @@ class Game {
       platform.resize();
     });
     this.controller.buttons.forEach(button => {
-      button.resize();
+      button.resizeButtons();
     });
     this.player.resize();
     this.coins.forEach((coin) => {
@@ -174,7 +174,6 @@ class Game {
     );
   }
   isClickedOn(mouse, startButton) {
-    console.log('clicked');
     return (
       mouse.x < startButton.scaledX + startButton.scaledWidth && mouse.x + mouse.width > startButton.scaledX && mouse.y < startButton.scaledY + startButton.scaledHeight && mouse.y + mouse.height > startButton.scaledY
     );
@@ -188,11 +187,8 @@ class Game {
   }
   render() {
     if (window.orientation === 0) {
-      this.start = false;
-      console.log(this.start);
       this.handleOrientationChange();
     } 
-    console.log(this.start);
     if (this.start) {
       this.background.draw();
 
@@ -207,9 +203,11 @@ class Game {
         platform.draw();
       });
 
-      this.controller.buttons.forEach(button => {
-        button.draw();
-      });
+      if (this.pixelRatio >= 2) {
+        this.controller.buttons.forEach(button => {
+          button.draw();
+        });
+      }
 
       this.player.update();
       this.player.draw();
