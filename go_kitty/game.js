@@ -17,6 +17,10 @@ class Game {
       new Platform(this, 700 * 2 - 2, 470, 700, 250)
     ];
     this.gravity;
+
+    this.start;
+    this.startButton = new StartButton(this, 500, 0, 300, 60, 40);
+
     this.score;
     this.orientationMessage = document.createElement('div');
     this.orientationMessage.style.color = 'black';
@@ -35,7 +39,6 @@ class Game {
       width: 1,
       height: 1,
       pressed: false,
-      fired: false
     };
     this.keys = {
       d: {
@@ -87,7 +90,21 @@ class Game {
           break;
       }
     });
+    window.addEventListener('mousedown', e => {
+      this.mouse.x = e.x;
+      this.mouse.y = e.y;
+      this.mouse.pressed = true;
+      this.mouse.fired = false;
+    });
+    window.addEventListener('mouseup', e => {
+      this.mouse.x = e.x;
+      this.mouse.y = e.y;
+      this.mouse.pressed = false;
+    });
     window.addEventListener('touchstart', e => {
+      this.mouse.x = e.changedTouches[0].pageX;
+      this.mouse.y = e.changedTouches[0].pageY;
+      this.mouse.pressed = true;
       this.controller.touchStart(e);
       if (this.jBtn.active) {
         this.player.jump();
@@ -95,6 +112,9 @@ class Game {
     }, { passive: false });
 
     window.addEventListener('touchend', e => {
+      this.mouse.x = e.changedTouches[0].pageX;
+      this.mouse.y = e.changedTouches[0].pageY;
+      this.mouse.pressed = false;
       this.controller.touchEnd(e);
     });
     window.addEventListener('orientationchange', () => {
@@ -120,6 +140,10 @@ class Game {
     this.buttonRatio = this.width / this.baseWidth;
     this.ratio = this.height / this.baseHeight;
     this.gravity = 1.5 * this.ratio;
+
+    this.start = false;
+    this.startButton.resize();
+
     this.score = 0;
     this.coins = [
       new Coins(this, 700, 380),
@@ -150,10 +174,15 @@ class Game {
       rect1.scaledX < rect2.scaledX + rect2.scaledWidth && rect1.scaledX + rect1.scaledWidth > rect2.scaledX && rect1.scaledY < rect2.scaledY + rect2.scaledHeight && rect1.scaledY + rect1.scaledHeight > rect2.scaledY
     );
   }
+  isClickedOn(mouse, startButton) {
+    return (
+      mouse.x < startButton.scaledX + startButton.scaledWidth && mouse.x + mouse.width > startButton.scaledX && mouse.y < startButton.scaledY + startButton.scaledHeight && mouse.y + mouse.height > startButton.scaledY
+    );
+  }
   drawScoreText() {
     this.ctx.save();
     this.ctx.fillStyle = 'magenta';
-    this.ctx.font = 'bold 33px Poppins, sans-serif';
+    this.ctx.font = `bold ${33 * this.ratio}px Poppins, sans-serif`;
     this.ctx.fillText(`score: ${this.score}`, 40 * this.ratio, 80 * this.ratio);
     this.ctx.restore();
   }
@@ -161,76 +190,85 @@ class Game {
     if (window.orientation === 0) {
       this.handleOrientationChange();
     }
-    this.background.draw();
 
-    this.drawScoreText();
+    if (this.start) {
+      this.background.draw();
 
-    this.coins.forEach((coin) => {
-      coin.update();
-      coin.draw();
-    });
+      this.drawScoreText();
 
-    this.platforms.forEach((platform) => {
-      platform.draw();
-    });
+      this.coins.forEach((coin) => {
+        coin.update();
+        coin.draw();
+      });
 
-    this.controller.buttons.forEach(button => {
-      button.draw();
-    });
+      this.platforms.forEach((platform) => {
+        platform.draw();
+      });
 
-    this.player.update();
-    this.player.draw();
-    if (this.keys.d.pressed && this.player.scaledX < 400 * this.ratio) {
-      this.player.moveRight();
-    } else if (this.keys.a.pressed && this.player.scaledX > 100 * this.ratio) {
-      this.player.moveLeft();
-    } else if (this.lBtn.active && this.player.scaledX > 100 * this.ratio) {
-      this.player.moveLeft();
-    } else if (this.rBtn.active && this.player.scaledX < 400 * this.ratio) {
-      this.player.moveRight();
+      this.controller.buttons.forEach(button => {
+        button.draw();
+      });
+
+      this.player.update();
+      this.player.draw();
+      if (this.keys.d.pressed && this.player.scaledX < 400 * this.ratio) {
+        this.player.moveRight();
+      } else if (this.keys.a.pressed && this.player.scaledX > 100 * this.ratio) {
+        this.player.moveLeft();
+      } else if (this.lBtn.active && this.player.scaledX > 100 * this.ratio) {
+        this.player.moveLeft();
+      } else if (this.rBtn.active && this.player.scaledX < 400 * this.ratio) {
+        this.player.moveRight();
+      } else {
+        this.player.fullStop();
+
+        if (this.keys.d.pressed) {
+          this.background.moveLeft();
+          this.platforms.forEach((platform) => {
+            platform.moveLeft();
+          });
+          this.coins.forEach((coin) => {
+            coin.moveLeft();
+          });
+        } else if (this.keys.a.pressed) {
+          this.background.moveRight();
+          this.platforms.forEach((platform) => {
+            platform.moveRight();
+          });
+          this.coins.forEach((coin) => {
+            coin.moveRight();
+          });
+        } else if (this.lBtn.active) {
+          this.background.moveRight();
+          this.platforms.forEach((platform) => {
+            platform.moveRight();
+          });
+          this.coins.forEach((coin) => {
+            coin.moveRight();
+          });
+        } else if (this.rBtn.active) {
+          this.background.moveLeft();
+          this.platforms.forEach((platform) => {
+            platform.moveLeft();
+          });
+          this.coins.forEach((coin) => {
+            coin.moveLeft();
+          });
+        }
+      }
+      
+      this.platforms.forEach((platform) => {
+        if (this.checkCollision(this.player, platform)) {
+          this.player.speed.y = 0;
+        }
+      });
     } else {
-      this.player.fullStop();
-
-      if (this.keys.d.pressed) {
-        this.background.moveLeft();
-        this.platforms.forEach((platform) => {
-          platform.moveLeft();
-        });
-        this.coins.forEach((coin) => {
-          coin.moveLeft();
-        });
-      } else if (this.keys.a.pressed) {
-        this.background.moveRight();
-        this.platforms.forEach((platform) => {
-          platform.moveRight();
-        });
-        this.coins.forEach((coin) => {
-          coin.moveRight();
-        });
-      } else if (this.lBtn.active) {
-        this.background.moveRight();
-        this.platforms.forEach((platform) => {
-          platform.moveRight();
-        });
-        this.coins.forEach((coin) => {
-          coin.moveRight();
-        });
-      } else if (this.rBtn.active) {
-        this.background.moveLeft();
-        this.platforms.forEach((platform) => {
-          platform.moveLeft();
-        });
-        this.coins.forEach((coin) => {
-          coin.moveLeft();
-        });
+      this.startButton.draw();
+      if (this.isClickedOn(this.mouse, this.startButton)) {
+        this.start = true;
       }
     }
     
-    this.platforms.forEach((platform) => {
-      if (this.checkCollision(this.player, platform)) {
-        this.player.speed.y = 0;
-      }
-    });
   }
 }
 
