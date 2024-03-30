@@ -94,7 +94,6 @@ class Game {
       this.mouse.x = e.x;
       this.mouse.y = e.y;
       this.mouse.pressed = true;
-      this.mouse.fired = false;
     });
     window.addEventListener('mouseup', e => {
       this.mouse.x = e.x;
@@ -141,8 +140,8 @@ class Game {
     this.ratio = this.height / this.baseHeight;
     this.gravity = 1.5 * this.ratio;
 
-    this.start = false;
     this.startButton.resize();
+    this.start = false;
 
     this.score = 0;
     this.coins = [
@@ -175,6 +174,7 @@ class Game {
     );
   }
   isClickedOn(mouse, startButton) {
+    console.log('clicked');
     return (
       mouse.x < startButton.scaledX + startButton.scaledWidth && mouse.x + mouse.width > startButton.scaledX && mouse.y < startButton.scaledY + startButton.scaledHeight && mouse.y + mouse.height > startButton.scaledY
     );
@@ -188,9 +188,11 @@ class Game {
   }
   render() {
     if (window.orientation === 0) {
+      this.start = false;
+      console.log(this.start);
       this.handleOrientationChange();
-    }
-
+    } 
+    console.log(this.start);
     if (this.start) {
       this.background.draw();
 
@@ -262,12 +264,14 @@ class Game {
           this.player.speed.y = 0;
         }
       });
-    } else {
+    }
+    else {
       this.startButton.draw();
-      if (this.isClickedOn(this.mouse, this.startButton)) {
+      if (this.mouse.pressed && this.isClickedOn(this.mouse, this.startButton)) {
         this.start = true;
       }
     }
+    
     
   }
 }
