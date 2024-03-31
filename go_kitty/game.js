@@ -130,19 +130,7 @@ class Game {
       this.resize(window.innerWidth, window.innerHeight);
     }
   }
-  resize(width, height) {
-    this.canvas.width = width * this.pixelRatio;
-    this.canvas.height = height * this.pixelRatio;
-    this.ctx.scale(this.pixelRatio, this.pixelRatio);
-    this.width = width;
-    this.height = height;
-    this.buttonRatio = this.width / this.baseWidth;
-    this.ratio = this.height / this.baseHeight;
-    this.gravity = 1.5 * this.ratio;
-
-    this.startButton.resize();
-    this.start = false;
-
+  init() {
     this.score = 0;
     this.coins = [
       new Coins(this, 700, 380),
@@ -162,6 +150,21 @@ class Game {
     this.coins.forEach((coin) => {
       coin.resize();
     });
+  }
+  resize(width, height) {
+    this.canvas.width = width * this.pixelRatio;
+    this.canvas.height = height * this.pixelRatio;
+    this.ctx.scale(this.pixelRatio, this.pixelRatio);
+    this.width = width;
+    this.height = height;
+    this.buttonRatio = this.width / this.baseWidth;
+    this.ratio = this.height / this.baseHeight;
+    this.gravity = 1.5 * this.ratio;
+
+    this.startButton.resize();
+    this.start = false;
+
+    this.init();
   }
   checkCollision(player, platform) {
     return (
@@ -262,6 +265,11 @@ class Game {
           this.player.speed.y = 0;
         }
       });
+
+      if (this.player.scaledY > this.height) {
+        console.log('you lose');
+        this.init();
+      }
     }
     else {
       this.startButton.draw();
