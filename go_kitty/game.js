@@ -77,6 +77,10 @@ class Game {
         case 'a':
           this.keys.a.pressed = true;
           break;
+
+        case 'f':
+          this.toggleFullScreen();
+          break;
       }
     });
     window.addEventListener('keyup', (event) => {
@@ -119,6 +123,13 @@ class Game {
     window.addEventListener('orientationchange', () => {
       this.handleOrientationChange();
     });
+  }
+  toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
   }
   handleOrientationChange() {
     if (window.orientation === 0) {
