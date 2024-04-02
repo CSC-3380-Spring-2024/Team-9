@@ -10,6 +10,7 @@ class Game {
     this.ratio = this.height / this.baseHeight;
     this.background = new Background(this);
     this.player = new Player(this);
+    this.lives;
     this.coins = [];
     this.platforms = [
       new Platform(this, 0, 470, 700, 250),
@@ -20,6 +21,7 @@ class Game {
 
     this.start;
     this.startButton = new StartButton(this, 500, 0, 300, 60, 40);
+    this.gameOverButton = new gameOverButton(this, 300, 60, 40);
 
     this.score;
     this.orientationMessage = document.createElement('div');
@@ -162,6 +164,9 @@ class Game {
       coin.resize();
     });
   }
+  resetLives() {
+    this.lives = 3;
+  }
   resize(width, height) {
     this.canvas.width = width * this.pixelRatio;
     this.canvas.height = height * this.pixelRatio;
@@ -174,6 +179,9 @@ class Game {
 
     this.startButton.resize();
     this.start = false;
+    this.resetLives();
+
+    this.gameOverButton.resize();
 
     this.init();
   }
@@ -197,13 +205,17 @@ class Game {
     this.ctx.fillStyle = 'magenta';
     this.ctx.font = `bold ${33 * this.ratio}px Poppins, sans-serif`;
     this.ctx.fillText(`score: ${this.score}`, 40 * this.ratio, 80 * this.ratio);
+    for (let i = 0; i < this.lives; i++) {
+      this.ctx.fillStyle = 'orange';
+      this.ctx.fillRect((80 + 20 * i) * this.ratio, 100 * this.ratio, 10 * this.ratio, 25 * this.ratio);
+    }
     this.ctx.restore();
   }
   render() {
     if (window.orientation === 0) {
       this.handleOrientationChange();
     } 
-    if (this.start) {
+    if (this.start && this.lives >= 1) {
       this.background.draw();
 
       this.drawScoreText();
@@ -280,6 +292,13 @@ class Game {
       if (this.player.scaledY > this.height) {
         console.log('you lose');
         this.init();
+        this.lives--;
+      }
+    }
+    else if (this.start && this.lives < 1) {
+      this.gameOverButton.draw();
+      if (this.mouse.pressed && this.isClickedOn(this.mouse, this.gameOverButton)) {
+        this.resetLives();
       }
     }
     else {
