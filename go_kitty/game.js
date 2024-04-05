@@ -288,7 +288,7 @@ class Game {
       }
 
       if (this.player.reset) {
-        if (this.pixelRatio >= 2) {
+        if (this.pixelRatio >= 3) {
           this.lastButton = 'right';
         } else {
           this.lastKey = 'right';
@@ -356,7 +356,7 @@ class Game {
         this.lives--;
       }
 
-      if (this.pixelRatio >= 2) {
+      if (this.pixelRatio >= 3) {
         this.controller.buttons.forEach(button => {
           button.draw();
         });
