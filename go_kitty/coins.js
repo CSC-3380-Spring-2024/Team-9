@@ -7,16 +7,20 @@ class Coins {
     };
     this.scaledX;
     this.scaledY;
-    this.width = 50;
-    this.height = 50;
+    this.width = 81;
+    this.height = 52;
     this.scaledWidth;
     this.scaledHeight;
     this.collected = false;
+    this.image = document.getElementById('fish');
   }
 
   draw() {
+    /*
     this.game.ctx.fillStyle = 'green';
     this.game.ctx.fillRect(this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
+    */
+    this.game.ctx.drawImage(this.image, this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
   }
 
   update() {
