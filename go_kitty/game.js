@@ -186,6 +186,8 @@ class Game {
     this.canvas.width = width * this.pixelRatio;
     this.canvas.height = height * this.pixelRatio;
     this.ctx.scale(this.pixelRatio, this.pixelRatio);
+    this.ctx.lineWidth = 5;
+    this.ctx.strokeStyle = 'green';
     this.width = width;
     this.height = height;
     this.buttonRatio = this.width / this.baseWidth;
@@ -198,17 +200,25 @@ class Game {
 
     this.gameOverButton.resize();
 
+    if (this.pixelRatio >= 3) {
+      this.lastButton = 'right';
+    } else {
+      this.lastKey = 'right';
+    }
+
     this.init();
   }
   checkCollision(player, platform) {
     return (
-      player.scaledY + player.scaledHeight <= platform.scaledY && player.scaledY + player.scaledHeight + player.speed.y >= platform.scaledY && player.scaledX + player.scaledWidth >= platform.scaledX && player.scaledX <= platform.scaledX + platform.scaledWidth
+      player.hitBoxY + player.hitBoxHeight <= platform.scaledY && player.hitBoxY + player.hitBoxHeight + player.speed.y >= platform.scaledY && player.hitBoxX + player.hitBoxWidth >= platform.scaledX && player.hitBoxX <= platform.scaledX + platform.scaledWidth
     );
   }
-  isCollected(rect1, rect2) {
-    return (
-      rect1.scaledX < rect2.scaledX + rect2.scaledWidth && rect1.scaledX + rect1.scaledWidth > rect2.scaledX && rect1.scaledY < rect2.scaledY + rect2.scaledHeight && rect1.scaledY + rect1.scaledHeight > rect2.scaledY
-    );
+  isCollected(a, b) {
+    const dx = a.currentCollisionX - b.currentCollisionX;
+    const dy = a.currentCollisionY - b.currentCollisionY;
+    const distance = Math.hypot(dx, dy);
+    const sumOfRadii = a.collisionRadius + b.collisionRadius;
+    return distance <= sumOfRadii;
   }
   isClickedOn(mouse, startButton) {
     return (
@@ -327,48 +337,56 @@ class Game {
           this.player.currentSpriteY = this.player.sprites.run.y;
           this.player.currentSpriteWidth = this.player.sprites.run.width;
           this.player.currentSpriteHeight = this.player.sprites.run.height;
+          this.player.currentCircleX = 0.77;
         } else if (this.rBtn.active && this.lastButton === 'right' && this.player.currentSprite !== this.player.sprites.run.right) {
           this.player.currentSprite = this.player.sprites.run.right;
           this.player.currentSpriteX = this.player.sprites.run.x;
           this.player.currentSpriteY = this.player.sprites.run.y;
           this.player.currentSpriteWidth = this.player.sprites.run.width;
           this.player.currentSpriteHeight = this.player.sprites.run.height;
+          this.player.currentCircleX = 0.77;
         } else if (this.keys.a.pressed && this.lastKey === 'left' && this.player.currentSprite !== this.player.sprites.run.left) {
           this.player.currentSprite = this.player.sprites.run.left;
           this.player.currentSpriteX = this.player.sprites.run.x;
           this.player.currentSpriteY = this.player.sprites.run.y;
           this.player.currentSpriteWidth = this.player.sprites.run.width;
           this.player.currentSpriteHeight = this.player.sprites.run.height;
+          this.player.currentCircleX = 0.23;
         } else if (this.lBtn.active && this.lastButton === 'left' && this.player.currentSprite !== this.player.sprites.run.left) {
           this.player.currentSprite = this.player.sprites.run.left;
           this.player.currentSpriteX = this.player.sprites.run.x;
           this.player.currentSpriteY = this.player.sprites.run.y;
           this.player.currentSpriteWidth = this.player.sprites.run.width;
           this.player.currentSpriteHeight = this.player.sprites.run.height;
+          this.player.currentCircleX = 0.23;
         } else if (!this.keys.a.pressed && this.lastKey === 'left' && this.player.currentSprite !== this.player.sprites.stand.left) {
           this.player.currentSprite = this.player.sprites.stand.left;
           this.player.currentSpriteX = this.player.sprites.stand.x;
           this.player.currentSpriteY = this.player.sprites.stand.y;
           this.player.currentSpriteWidth = this.player.sprites.stand.width;
           this.player.currentSpriteHeight = this.player.sprites.stand.height;
+          this.player.currentCircleX = 0.23;
         } else if (!this.lBtn.active && this.lastButton === 'left' && this.player.currentSprite !== this.player.sprites.stand.left) {
           this.player.currentSprite = this.player.sprites.stand.left;
           this.player.currentSpriteX = this.player.sprites.stand.x;
           this.player.currentSpriteY = this.player.sprites.stand.y;
           this.player.currentSpriteWidth = this.player.sprites.stand.width;
           this.player.currentSpriteHeight = this.player.sprites.stand.height;
+          this.player.currentCircleX = 0.23;
         } else if (!this.keys.d.pressed && this.lastKey === 'right' && this.player.currentSprite !== this.player.sprites.stand.right) {
           this.player.currentSprite = this.player.sprites.stand.right;
           this.player.currentSpriteX = this.player.sprites.stand.x;
           this.player.currentSpriteY = this.player.sprites.stand.y;
           this.player.currentSpriteWidth = this.player.sprites.stand.width;
           this.player.currentSpriteHeight = this.player.sprites.stand.height;
+          this.player.currentCircleX = 0.77;
         } else if (!this.rBtn.active && this.lastButton === 'right' && this.player.currentSprite !== this.player.sprites.stand.right) {
           this.player.currentSprite = this.player.sprites.stand.right;
           this.player.currentSpriteX = this.player.sprites.stand.x;
           this.player.currentSpriteY = this.player.sprites.stand.y;
           this.player.currentSpriteWidth = this.player.sprites.stand.width;
           this.player.currentSpriteHeight = this.player.sprites.stand.height;
+          this.player.currentCircleX = 0.77;
         }
       }
       
