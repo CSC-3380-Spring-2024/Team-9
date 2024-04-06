@@ -13,6 +13,13 @@ class Coins {
     this.scaledHeight;
     this.collected = false;
     this.image = document.getElementById('fish');
+    this.currentCollisionX;
+    this.currentCollisionY;
+    this.currentCircleX = 0.5;
+    this.currentCircleY = 0.5;
+    this.collisionRadius = 27 * this.game.ratio;
+    this.currentCollisionX = this.scaledX + this.scaledWidth * this.currentCircleX;
+    this.currentCollisionY = this.scaledY + this.scaledHeight * this.currentCircleY;
   }
 
   draw() {
@@ -21,14 +28,22 @@ class Coins {
     this.game.ctx.fillRect(this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
     */
     this.game.ctx.drawImage(this.image, this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
+
+    /*
+    this.game.ctx.beginPath();
+    this.game.ctx.arc(this.currentCollisionX, this.currentCollisionY, this.collisionRadius, 0, Math.PI * 2);
+    this.game.ctx.stroke();
+    */
   }
 
   update() {
-    if (this.game.isCollected(this.game.player, this)) {
+    if (this.game.isCollected(this, this.game.player)) {
       this.collected = true;
       this.game.coins = this.game.coins.filter(coin => !coin.collected);
       this.game.score++;
     }
+    this.currentCollisionX = this.scaledX + this.scaledWidth * this.currentCircleX;
+    this.currentCollisionY = this.scaledY + this.scaledHeight * this.currentCircleY;
   }
 
   resize() {
@@ -36,6 +51,11 @@ class Coins {
     this.scaledY = this.position.y * this.game.ratio;
     this.scaledWidth = this.width * this.game.ratio;
     this.scaledHeight = this.height * this.game.ratio;
+    
+    this.currentCircleX = 0.5;
+    this.currentCircleY = 0.5;
+    this.collisionRadius = 27 * this.game.ratio;
+    
   }
 
   moveLeft() {
