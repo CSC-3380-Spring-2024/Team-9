@@ -9,12 +9,23 @@ class Player {
       x: 0,
       y: 0
     };
-    this.width = 236;
-    this.height = 138;
+    this.width = 96;
+    this.height = 70;
+    this.hitBoxPosition = {
+      x: 188,
+      y: 168
+    };
+    this.hitBoxWidth;
+    this.hitBoxHeight;
+    this.hitBoxX;
+    this.hitBoxY;
     this.scaledX;
     this.scaledY;
     this.scaledWidth;
     this.scaledHeight;
+    this.collisionX;
+    this.collisionY;
+    this.collisionRadius;
     this.isJumping = false;
     this.image = document.getElementById('miffyrunleft');
     this.sprites = {
@@ -41,16 +52,27 @@ class Player {
     this.currentSpriteY;
     this.currentSpriteWidth;
     this.currentSpriteHeight;
+    this.currentCollisionX;
+    this.currentCollisionY;
+    this.currentCircleX = 0.77;
+    this.currentCircleY = 0.42;
     this.reset = false;
   }
 
   draw() {
     /*
     this.game.ctx.fillStyle = 'yellow';
-    this.game.ctx.fillRect(this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
+    this.game.ctx.fillRect(this.hitBoxX, this.hitBoxY, this.hitBoxWidth, this.hitBoxHeight);
     */
     
+    
     this.game.ctx.drawImage(this.currentSprite, this.currentSpriteWidth * this.frames, this.currentSpriteY, this.currentSpriteWidth, this.currentSpriteHeight, this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
+
+    /*
+    this.game.ctx.beginPath();
+    this.game.ctx.arc(this.currentCollisionX, this.currentCollisionY, this.collisionRadius, 0, Math.PI * 2);
+    this.game.ctx.stroke();
+    */
   }
 
   update() {
@@ -62,7 +84,10 @@ class Player {
     }
     this.scaledX += this.speed.x;
     this.scaledY += this.speed.y;
-    console.log(this.speed.y);
+    this.hitBoxX += this.speed.x;
+    this.hitBoxY += this.speed.y;
+    this.currentCollisionX = this.scaledX + this.scaledWidth * this.currentCircleX;
+    this.currentCollisionY = this.scaledY + this.scaledHeight * this.currentCircleY;
     if (this.speed.y === 0) {
       this.isJumping = false;
     }
@@ -72,7 +97,7 @@ class Player {
   }
 
   isTouchingBottom() {
-    return this.scaledY >= this.game.height - this.scaledHeight;
+    return this.hitBoxY >= this.game.height - this.hitBoxHeight;
   }
 
   jump() {
@@ -95,10 +120,6 @@ class Player {
   }
 
   resize() {
-    /*
-    this.scaledWidth = this.width * this.game.ratio;
-    this.scaledHeight = this.height * this.game.ratio;
-    */
     this.frames = 0;
     
     this.currentSprite = this.sprites.stand.right;
@@ -106,13 +127,18 @@ class Player {
     this.currentSpriteY = this.sprites.stand.y;
     this.currentSpriteWidth = this.sprites.stand.width;
     this.currentSpriteHeight = this.sprites.stand.height;
-    this.scaledWidth = this.currentSpriteWidth * this.game.ratio;
-    this.scaledHeight = this.currentSpriteHeight * this.game.ratio;
+    this.currentCircleX = 0.77;
+    this.collisionRadius = 40 * this.game.ratio;
     
     
     this.scaledWidth = this.currentSpriteWidth * this.game.ratio;
     this.scaledHeight = this.currentSpriteHeight * this.game.ratio;
     this.scaledX = this.position.x * this.game.ratio;
     this.scaledY = this.position.y * this.game.ratio;
+
+    this.hitBoxWidth = this.width * this.game.ratio;
+    this.hitBoxHeight = this.height * this.game.ratio;
+    this.hitBoxX = this.hitBoxPosition.x * this.game.ratio;
+    this.hitBoxY = this.hitBoxPosition.y * this.game.ratio;
   }
 }
