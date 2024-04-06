@@ -52,6 +52,7 @@ class Game {
         pressed: false
       }
     };
+    this.canMove;
     this.controller = new ButtonController();
     
     this.lBtn = new Button(400, 676, 170, 170, "purple", this, 'left');
@@ -75,13 +76,17 @@ class Game {
           break;
         
         case 'd':
-          this.keys.d.pressed = true;
-          this.lastKey = 'right';
+          if (this.canMove) {
+            this.keys.d.pressed = true;
+            this.lastKey = 'right';
+          }
           break;
         
         case 'a':
-          this.keys.a.pressed = true;
-          this.lastKey = 'left';
+          if (this.canMove) {
+            this.keys.a.pressed = true;
+            this.lastKey = 'left';
+          }
           break;
 
         case 'f':
@@ -241,107 +246,130 @@ class Game {
 
       this.player.update();
       this.player.draw();
-      if (this.keys.d.pressed && this.player.scaledX < 400 * this.ratio) {
-        this.player.moveRight();
-      } else if (this.keys.a.pressed && this.player.scaledX > 100 * this.ratio) {
-        this.player.moveLeft();
-      } else if (this.lBtn.active && this.player.scaledX > 100 * this.ratio) {
-        this.player.moveLeft();
-      } else if (this.rBtn.active && this.player.scaledX < 400 * this.ratio) {
-        this.player.moveRight();
-      } else {
-        this.player.fullStop();
-
-        if (this.keys.d.pressed) {
-          this.background.moveLeft();
-          this.platforms.forEach((platform) => {
-            platform.moveLeft();
-          });
-          this.coins.forEach((coin) => {
-            coin.moveLeft();
-          });
-        } else if (this.keys.a.pressed) {
-          this.background.moveRight();
-          this.platforms.forEach((platform) => {
-            platform.moveRight();
-          });
-          this.coins.forEach((coin) => {
-            coin.moveRight();
-          });
-        } else if (this.lBtn.active) {
-          this.background.moveRight();
-          this.platforms.forEach((platform) => {
-            platform.moveRight();
-          });
-          this.coins.forEach((coin) => {
-            coin.moveRight();
-          });
-        } else if (this.rBtn.active) {
-          this.background.moveLeft();
-          this.platforms.forEach((platform) => {
-            platform.moveLeft();
-          });
-          this.coins.forEach((coin) => {
-            coin.moveLeft();
-          });
-        }
-      }
 
       if (this.player.reset) {
         if (this.pixelRatio >= 3) {
           this.lastButton = 'right';
+          if (this.lBtn.active) {
+            this.lBtn.active = false;
+          } else if (this.rBtn.active) {
+            this.rBtn.active = false;
+          } 
         } else {
           this.lastKey = 'right';
+          if (!this.keys.d.pressed && this.keys.a.pressed) {
+            this.canMove = false;
+          } else if (this.keys.d.pressed && !this.keys.a.pressed) {
+            this.canMove = false;
+          }
         }
         this.player.reset = false;
-      } else if (this.keys.d.pressed && this.lastKey === 'right' && this.player.currentSprite !== this.player.sprites.run.right) {
-        this.player.currentSprite = this.player.sprites.run.right;
-        this.player.currentSpriteX = this.player.sprites.run.x;
-        this.player.currentSpriteY = this.player.sprites.run.y;
-        this.player.currentSpriteWidth = this.player.sprites.run.width;
-        this.player.currentSpriteHeight = this.player.sprites.run.height;
-      } else if (this.rBtn.active && this.lastButton === 'right' && this.player.currentSprite !== this.player.sprites.run.right) {
-        this.player.currentSprite = this.player.sprites.run.right;
-        this.player.currentSpriteX = this.player.sprites.run.x;
-        this.player.currentSpriteY = this.player.sprites.run.y;
-        this.player.currentSpriteWidth = this.player.sprites.run.width;
-        this.player.currentSpriteHeight = this.player.sprites.run.height;
-      } else if (this.keys.a.pressed && this.lastKey === 'left' && this.player.currentSprite !== this.player.sprites.run.left) {
-        this.player.currentSprite = this.player.sprites.run.left;
-        this.player.currentSpriteX = this.player.sprites.run.x;
-        this.player.currentSpriteY = this.player.sprites.run.y;
-        this.player.currentSpriteWidth = this.player.sprites.run.width;
-        this.player.currentSpriteHeight = this.player.sprites.run.height;
-      } else if (this.lBtn.active && this.lastButton === 'left' && this.player.currentSprite !== this.player.sprites.run.left) {
-        this.player.currentSprite = this.player.sprites.run.left;
-        this.player.currentSpriteX = this.player.sprites.run.x;
-        this.player.currentSpriteY = this.player.sprites.run.y;
-        this.player.currentSpriteWidth = this.player.sprites.run.width;
-        this.player.currentSpriteHeight = this.player.sprites.run.height;
-      } else if (!this.keys.a.pressed && this.lastKey === 'left' && this.player.currentSprite !== this.player.sprites.stand.left) {
-        this.player.currentSprite = this.player.sprites.stand.left;
-        this.player.currentSpriteX = this.player.sprites.stand.x;
-        this.player.currentSpriteY = this.player.sprites.stand.y;
-        this.player.currentSpriteWidth = this.player.sprites.stand.width;
-        this.player.currentSpriteHeight = this.player.sprites.stand.height;
-      } else if (!this.lBtn.active && this.lastButton === 'left' && this.player.currentSprite !== this.player.sprites.stand.left) {
-        this.player.currentSprite = this.player.sprites.stand.left;
-        this.player.currentSpriteX = this.player.sprites.stand.x;
-        this.player.currentSpriteY = this.player.sprites.stand.y;
-        this.player.currentSpriteWidth = this.player.sprites.stand.width;
-        this.player.currentSpriteHeight = this.player.sprites.stand.height;
-      } else if (!this.keys.d.pressed && this.lastKey === 'right' && this.player.currentSprite !== this.player.sprites.stand.right) {
-        this.player.currentSprite = this.player.sprites.stand.right;
-        this.player.currentSpriteX = this.player.sprites.stand.x;
-        this.player.currentSpriteY = this.player.sprites.stand.y;
-        this.player.currentSpriteWidth = this.player.sprites.stand.width;
-        this.player.currentSpriteHeight = this.player.sprites.stand.height;
-      } else if (!this.rBtn.active && this.lastButton === 'right' && this.player.currentSprite !== this.player.sprites.stand.right) {
-        this.player.currentSprite = this.player.sprites.stand.right;
-        this.player.currentSpriteX = this.player.sprites.stand.x;
-        this.player.currentSpriteY = this.player.sprites.stand.y;
-        this.player.currentSpriteWidth = this.player.sprites.stand.width;
-        this.player.currentSpriteHeight = this.player.sprites.stand.height;
+      }
+
+      if (!this.keys.d.pressed && !this.keys.a.pressed) {
+        this.canMove = true;
+      }
+      if (!this.canMove) {
+        this.player.speed.x = 0;
+      }
+      if (this.canMove) {
+        if (this.keys.d.pressed && this.player.scaledX < 400 * this.ratio) {
+          this.player.moveRight();
+        } else if (this.keys.a.pressed && this.player.scaledX > 100 * this.ratio) {
+          this.player.moveLeft();
+        } else if (this.lBtn.active && this.player.scaledX > 100 * this.ratio) {
+          this.player.moveLeft();
+        } else if (this.rBtn.active && this.player.scaledX < 400 * this.ratio) {
+          this.player.moveRight();
+        } else {
+          this.player.fullStop();
+
+          if (this.keys.d.pressed) {
+            this.background.moveLeft();
+            this.platforms.forEach((platform) => {
+              platform.moveLeft();
+            });
+            this.coins.forEach((coin) => {
+              coin.moveLeft();
+            });
+          } else if (this.keys.a.pressed) {
+            this.background.moveRight();
+            this.platforms.forEach((platform) => {
+              platform.moveRight();
+            });
+            this.coins.forEach((coin) => {
+              coin.moveRight();
+            });
+          } else if (this.lBtn.active) {
+            this.background.moveRight();
+            this.platforms.forEach((platform) => {
+              platform.moveRight();
+            });
+            this.coins.forEach((coin) => {
+              coin.moveRight();
+            });
+          } else if (this.rBtn.active) {
+            this.background.moveLeft();
+            this.platforms.forEach((platform) => {
+              platform.moveLeft();
+            });
+            this.coins.forEach((coin) => {
+              coin.moveLeft();
+            });
+          }
+        }
+      }
+
+      if (this.canMove) {
+        if (this.keys.d.pressed && this.lastKey === 'right' && this.player.currentSprite !== this.player.sprites.run.right) {
+          this.player.currentSprite = this.player.sprites.run.right;
+          this.player.currentSpriteX = this.player.sprites.run.x;
+          this.player.currentSpriteY = this.player.sprites.run.y;
+          this.player.currentSpriteWidth = this.player.sprites.run.width;
+          this.player.currentSpriteHeight = this.player.sprites.run.height;
+        } else if (this.rBtn.active && this.lastButton === 'right' && this.player.currentSprite !== this.player.sprites.run.right) {
+          this.player.currentSprite = this.player.sprites.run.right;
+          this.player.currentSpriteX = this.player.sprites.run.x;
+          this.player.currentSpriteY = this.player.sprites.run.y;
+          this.player.currentSpriteWidth = this.player.sprites.run.width;
+          this.player.currentSpriteHeight = this.player.sprites.run.height;
+        } else if (this.keys.a.pressed && this.lastKey === 'left' && this.player.currentSprite !== this.player.sprites.run.left) {
+          this.player.currentSprite = this.player.sprites.run.left;
+          this.player.currentSpriteX = this.player.sprites.run.x;
+          this.player.currentSpriteY = this.player.sprites.run.y;
+          this.player.currentSpriteWidth = this.player.sprites.run.width;
+          this.player.currentSpriteHeight = this.player.sprites.run.height;
+        } else if (this.lBtn.active && this.lastButton === 'left' && this.player.currentSprite !== this.player.sprites.run.left) {
+          this.player.currentSprite = this.player.sprites.run.left;
+          this.player.currentSpriteX = this.player.sprites.run.x;
+          this.player.currentSpriteY = this.player.sprites.run.y;
+          this.player.currentSpriteWidth = this.player.sprites.run.width;
+          this.player.currentSpriteHeight = this.player.sprites.run.height;
+        } else if (!this.keys.a.pressed && this.lastKey === 'left' && this.player.currentSprite !== this.player.sprites.stand.left) {
+          this.player.currentSprite = this.player.sprites.stand.left;
+          this.player.currentSpriteX = this.player.sprites.stand.x;
+          this.player.currentSpriteY = this.player.sprites.stand.y;
+          this.player.currentSpriteWidth = this.player.sprites.stand.width;
+          this.player.currentSpriteHeight = this.player.sprites.stand.height;
+        } else if (!this.lBtn.active && this.lastButton === 'left' && this.player.currentSprite !== this.player.sprites.stand.left) {
+          this.player.currentSprite = this.player.sprites.stand.left;
+          this.player.currentSpriteX = this.player.sprites.stand.x;
+          this.player.currentSpriteY = this.player.sprites.stand.y;
+          this.player.currentSpriteWidth = this.player.sprites.stand.width;
+          this.player.currentSpriteHeight = this.player.sprites.stand.height;
+        } else if (!this.keys.d.pressed && this.lastKey === 'right' && this.player.currentSprite !== this.player.sprites.stand.right) {
+          this.player.currentSprite = this.player.sprites.stand.right;
+          this.player.currentSpriteX = this.player.sprites.stand.x;
+          this.player.currentSpriteY = this.player.sprites.stand.y;
+          this.player.currentSpriteWidth = this.player.sprites.stand.width;
+          this.player.currentSpriteHeight = this.player.sprites.stand.height;
+        } else if (!this.rBtn.active && this.lastButton === 'right' && this.player.currentSprite !== this.player.sprites.stand.right) {
+          this.player.currentSprite = this.player.sprites.stand.right;
+          this.player.currentSpriteX = this.player.sprites.stand.x;
+          this.player.currentSpriteY = this.player.sprites.stand.y;
+          this.player.currentSpriteWidth = this.player.sprites.stand.width;
+          this.player.currentSpriteHeight = this.player.sprites.stand.height;
+        }
       }
       
       this.platforms.forEach((platform) => {
