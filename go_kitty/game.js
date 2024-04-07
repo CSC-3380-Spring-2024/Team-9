@@ -195,13 +195,17 @@ class Game {
     this.gravity = 1.5 * this.ratio;
 
     this.startButton.resize();
-    this.start = false;
+    this.start = true;
     this.resetLives();
 
     this.gameOverButton.resize();
 
     if (this.pixelRatio >= 3) {
       this.lastButton = 'right';
+    } else if (this.pixelRatio === 2 && this.isTouchDevice()) {
+      this.lastButton = 'right';
+    } else if (this.pixelRatio === 2 && !this.isTouchDevice()) {
+      this.lastKey = 'right';
     } else {
       this.lastKey = 'right';
     }
@@ -224,6 +228,9 @@ class Game {
     return (
       mouse.x < startButton.scaledX + startButton.scaledWidth && mouse.x + mouse.width > startButton.scaledX && mouse.y < startButton.scaledY + startButton.scaledHeight && mouse.y + mouse.height > startButton.scaledY
     );
+  }
+  isTouchDevice() {
+    return 'ontouchstart' in window || navigator.maxTouchPoints;
   }
   drawScoreText() {
     this.ctx.save();
@@ -265,6 +272,20 @@ class Game {
           } else if (this.rBtn.active) {
             this.rBtn.active = false;
           } 
+        } else if (this.pixelRatio === 2 && this.isTouchDevice()) {
+          this.lastButton = 'right';
+          if (this.lBtn.active) {
+            this.lBtn.active = false;
+          } else if (this.rBtn.active) {
+            this.rBtn.active = false;
+          } 
+        } else if (this.pixelRatio === 2 && !this.isTouchDevice()) {
+          this.lastKey = 'right';
+          if (!this.keys.d.pressed && this.keys.a.pressed) {
+            this.canMove = false;
+          } else if (this.keys.d.pressed && !this.keys.a.pressed) {
+            this.canMove = false;
+          }
         } else {
           this.lastKey = 'right';
           if (!this.keys.d.pressed && this.keys.a.pressed) {
@@ -338,6 +359,8 @@ class Game {
           this.player.currentSpriteWidth = this.player.sprites.run.width;
           this.player.currentSpriteHeight = this.player.sprites.run.height;
           this.player.currentCircleX = 0.77;
+          //this.hitBoxX = 188 * this.game.ratio;
+          this.player.hitBoxPosition.x = 88.8 * this.ratio;
         } else if (this.rBtn.active && this.lastButton === 'right' && this.player.currentSprite !== this.player.sprites.run.right) {
           this.player.currentSprite = this.player.sprites.run.right;
           this.player.currentSpriteX = this.player.sprites.run.x;
@@ -345,6 +368,8 @@ class Game {
           this.player.currentSpriteWidth = this.player.sprites.run.width;
           this.player.currentSpriteHeight = this.player.sprites.run.height;
           this.player.currentCircleX = 0.77;
+          //this.hitBoxX = 188 * this.game.ratio;
+          this.player.hitBoxPosition.x = 88.8 * this.ratio;
         } else if (this.keys.a.pressed && this.lastKey === 'left' && this.player.currentSprite !== this.player.sprites.run.left) {
           this.player.currentSprite = this.player.sprites.run.left;
           this.player.currentSpriteX = this.player.sprites.run.x;
@@ -352,6 +377,8 @@ class Game {
           this.player.currentSpriteWidth = this.player.sprites.run.width;
           this.player.currentSpriteHeight = this.player.sprites.run.height;
           this.player.currentCircleX = 0.23;
+          //this.hitBoxX = 171 * this.game.ratio;
+          this.player.hitBoxPosition.x = 72 * this.ratio;
         } else if (this.lBtn.active && this.lastButton === 'left' && this.player.currentSprite !== this.player.sprites.run.left) {
           this.player.currentSprite = this.player.sprites.run.left;
           this.player.currentSpriteX = this.player.sprites.run.x;
@@ -359,6 +386,8 @@ class Game {
           this.player.currentSpriteWidth = this.player.sprites.run.width;
           this.player.currentSpriteHeight = this.player.sprites.run.height;
           this.player.currentCircleX = 0.23;
+          //this.hitBoxX = 171 * this.game.ratio;
+          this.player.hitBoxPosition.x = 72 * this.ratio;
         } else if (!this.keys.a.pressed && this.lastKey === 'left' && this.player.currentSprite !== this.player.sprites.stand.left) {
           this.player.currentSprite = this.player.sprites.stand.left;
           this.player.currentSpriteX = this.player.sprites.stand.x;
@@ -366,6 +395,8 @@ class Game {
           this.player.currentSpriteWidth = this.player.sprites.stand.width;
           this.player.currentSpriteHeight = this.player.sprites.stand.height;
           this.player.currentCircleX = 0.23;
+          //this.hitBoxX = 171 * this.game.ratio;
+          this.player.hitBoxPosition.x = 72 * this.ratio;
         } else if (!this.lBtn.active && this.lastButton === 'left' && this.player.currentSprite !== this.player.sprites.stand.left) {
           this.player.currentSprite = this.player.sprites.stand.left;
           this.player.currentSpriteX = this.player.sprites.stand.x;
@@ -373,6 +404,8 @@ class Game {
           this.player.currentSpriteWidth = this.player.sprites.stand.width;
           this.player.currentSpriteHeight = this.player.sprites.stand.height;
           this.player.currentCircleX = 0.23;
+          //this.hitBoxX = 171 * this.game.ratio;
+          this.player.hitBoxPosition.x = 72 * this.ratio;
         } else if (!this.keys.d.pressed && this.lastKey === 'right' && this.player.currentSprite !== this.player.sprites.stand.right) {
           this.player.currentSprite = this.player.sprites.stand.right;
           this.player.currentSpriteX = this.player.sprites.stand.x;
@@ -380,6 +413,8 @@ class Game {
           this.player.currentSpriteWidth = this.player.sprites.stand.width;
           this.player.currentSpriteHeight = this.player.sprites.stand.height;
           this.player.currentCircleX = 0.77;
+          //this.hitBoxX = 188 * this.game.ratio;
+          this.player.hitBoxPosition.x = 88.8 * this.ratio;
         } else if (!this.rBtn.active && this.lastButton === 'right' && this.player.currentSprite !== this.player.sprites.stand.right) {
           this.player.currentSprite = this.player.sprites.stand.right;
           this.player.currentSpriteX = this.player.sprites.stand.x;
@@ -387,6 +422,8 @@ class Game {
           this.player.currentSpriteWidth = this.player.sprites.stand.width;
           this.player.currentSpriteHeight = this.player.sprites.stand.height;
           this.player.currentCircleX = 0.77;
+          //this.hitBoxX = 188 * this.game.ratio;
+          this.player.hitBoxPosition.x = 88.8 * this.ratio;
         }
       }
       
@@ -403,6 +440,10 @@ class Game {
       }
 
       if (this.pixelRatio >= 3) {
+        this.controller.buttons.forEach(button => {
+          button.draw();
+        });
+      } else if (this.pixelRatio === 2 && this.isTouchDevice()) {
         this.controller.buttons.forEach(button => {
           button.draw();
         });
