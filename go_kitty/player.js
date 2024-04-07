@@ -9,7 +9,7 @@ class Player {
       x: 0,
       y: 0
     };
-    this.width = 96;
+    this.width = 97;
     this.height = 70;
     this.hitBoxPosition = {
       x: 188,
@@ -66,6 +66,7 @@ class Player {
     */
     
     
+    
     this.game.ctx.drawImage(this.currentSprite, this.currentSpriteWidth * this.frames, this.currentSpriteY, this.currentSpriteWidth, this.currentSpriteHeight, this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
 
     /*
@@ -84,7 +85,7 @@ class Player {
     }
     this.scaledX += this.speed.x;
     this.scaledY += this.speed.y;
-    this.hitBoxX += this.speed.x;
+    this.hitBoxX = this.scaledX + this.hitBoxPosition.x;
     this.hitBoxY += this.speed.y;
     this.currentCollisionX = this.scaledX + this.scaledWidth * this.currentCircleX;
     this.currentCollisionY = this.scaledY + this.scaledHeight * this.currentCircleY;
@@ -138,7 +139,8 @@ class Player {
 
     this.hitBoxWidth = this.width * this.game.ratio;
     this.hitBoxHeight = this.height * this.game.ratio;
-    this.hitBoxX = this.hitBoxPosition.x * this.game.ratio;
+    this.hitBoxPosition.x = 88.8 * this.game.ratio;
+    //this.hitBoxX = this.hitBoxPosition.x * this.game.ratio;
     this.hitBoxY = this.hitBoxPosition.y * this.game.ratio;
   }
 }
