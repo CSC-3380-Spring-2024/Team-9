@@ -195,7 +195,7 @@ class Game {
     this.gravity = 1.5 * this.ratio;
 
     this.startButton.resize();
-    this.start = true;
+    this.start = false;
     this.resetLives();
 
     this.gameOverButton.resize();
