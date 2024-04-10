@@ -149,7 +149,7 @@ class Game {
     }
   }
   handleOrientationChange() {
-    if (window.orientation === 0) {
+    if (window.innerWidth < window.innerHeight) {
       this.canvas.style.display = 'none';
       this.orientationMessage.style.display = 'block';
     } else {
@@ -244,7 +244,7 @@ class Game {
     this.ctx.restore();
   }
   render() {
-    if (window.orientation === 0) {
+    if (window.innerWidth < window.innerHeight) {
       this.handleOrientationChange();
     } 
     if (this.start && this.lives >= 1) {
