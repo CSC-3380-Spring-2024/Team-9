@@ -15,9 +15,9 @@ class Game {
     this.lives;
     this.coins = [];
     this.platforms = [
-      new Platform(this, 0, 470, 700, 250),
-      new Platform(this, 699, 470, 700, 250),
-      new Platform(this, 700 * 2 - 2, 470, 700, 250)
+      new Platform(this, 0, 550, 700, 170),
+      new Platform(this, 699, 550, 700, 170),
+      new Platform(this, 700 * 2 - 2, 550, 700, 170)
     ];
     this.gravity;
 
@@ -55,9 +55,9 @@ class Game {
     this.canMove;
     this.controller = new ButtonController();
     
-    this.lBtn = new Button(400, 676, 170, 170, "purple", this, 'left');
-    this.rBtn = new Button(700, 676, 170, 170, "red", this, 'right');
-    this.jBtn = new Button(1500, 676, 170, 170, "grey", this, 'jump');
+    this.lBtn = new Button(400, 676, 130, 130, "purple", this, 'left');
+    this.rBtn = new Button(700, 676, 130, 130, "red", this, 'right');
+    this.jBtn = new Button(1500, 676, 130, 130, "grey", this, 'jump');
     
     
     this.controller.addButton(this.lBtn);
@@ -239,7 +239,7 @@ class Game {
     this.ctx.fillText(`score: ${this.score}`, 40 * this.ratio, 80 * this.ratio);
     for (let i = 0; i < this.lives; i++) {
       this.ctx.fillStyle = 'orange';
-      this.ctx.fillRect((80 + 20 * i) * this.ratio, 100 * this.ratio, 10 * this.ratio, 25 * this.ratio);
+      this.ctx.fillRect((60 + 50 * i) * this.ratio, 100 * this.ratio, 32 * this.ratio, 32 * this.ratio);
     }
     this.ctx.restore();
   }
