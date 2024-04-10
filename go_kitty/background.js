@@ -5,6 +5,7 @@ class Background {
     this.height = this.game.baseHeight;
     this.scaledWidth;
     this.scaledHeight;
+    this.image = document.getElementById('background');
     this.position = {
       x: 0
     };
@@ -16,12 +17,15 @@ class Background {
   draw() {
     this.game.ctx.fillStyle = 'lightblue';
     this.game.ctx.fillRect(this.position.x, 0, this.scaledWidth, this.scaledHeight);
+    this.game.ctx.drawImage(this.image, this.position.x - this.scaledWidth + 1, 0, this.scaledWidth, this.scaledHeight);
+    this.game.ctx.drawImage(this.image, this.position.x, 0, this.scaledWidth, this.scaledHeight);
+    this.game.ctx.drawImage(this.image, this.position.x + this.scaledWidth - 1, 0, this.scaledWidth, this.scaledHeight);
   }
 
   resize() {
     this.scaledWidth = this.width * this.game.ratio;
     this.scaledHeight = this.height * this.game.ratio;
-    this.position.x = -0;
+    this.position.x = 0;
   }
 
   moveLeft() {
