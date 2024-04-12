@@ -9,6 +9,9 @@ class Game {
     this.baseWidth = 1700;
     this.ratio = this.height / this.baseHeight;
     this.background = new Background(this);
+    this.backgroundclouds = new BackgroundClouds(this);
+    this.backgroundbackhills = new BackgroundBackHills(this);
+    this.backgroundhills = new BackgroundHills(this);
     this.player = new Player(this);
     this.lastKey;
     this.lastButton;
@@ -21,9 +24,9 @@ class Game {
       new Coins(this, 2000, 180)
     ];
     this.platforms = [
-      new Platform(this, 0, 550, 700, 170),
-      new Platform(this, 699, 550, 700, 170),
-      new Platform(this, 700 * 2 - 2, 550, 700, 170)
+      new Platform(this, 0, 550, 503, 251, 0, 562, 503, 251),
+      new Platform(this, 502, 550, 503, 251, 502, 562, 503, 251),
+      new Platform(this, 503 * 2 - 2, 550, 503, 251, 503 * 2 - 2, 562, 503, 251)
     ];
     this.gravity;
 
@@ -175,6 +178,9 @@ class Game {
       new Coins(this, 2000, 180)
     ];*/
     this.background.resize();
+    this.backgroundclouds.resize();
+    this.backgroundbackhills.resize();
+    this.backgroundhills.resize();
     this.platforms.forEach((platform) => {
       platform.resize();
     });
@@ -230,7 +236,7 @@ class Game {
   }
   checkCollision(player, platform) {
     return (
-      player.hitBoxY + player.hitBoxHeight <= platform.scaledY && player.hitBoxY + player.hitBoxHeight + player.speed.y >= platform.scaledY && player.hitBoxX + player.hitBoxWidth >= platform.scaledX && player.hitBoxX <= platform.scaledX + platform.scaledWidth
+      player.hitBoxY + player.hitBoxHeight <= platform.hitBoxY && player.hitBoxY + player.hitBoxHeight + player.speed.y >= platform.hitBoxY && player.hitBoxX + player.hitBoxWidth >= platform.hitBoxX && player.hitBoxX <= platform.hitBoxX + platform.hitBoxSWidth
     );
   }
   isCollected(a, b) {
@@ -265,6 +271,9 @@ class Game {
     } 
     if (this.start && this.lives >= 1) {
       this.background.draw();
+      this.backgroundclouds.draw();
+      this.backgroundbackhills.draw();
+      this.backgroundhills.draw();
 
       this.drawScoreText();
 
@@ -273,12 +282,12 @@ class Game {
         coin.draw();
       });
 
+      this.player.update();
+      this.player.draw();
+
       this.platforms.forEach((platform) => {
         platform.draw();
       });
-
-      this.player.update();
-      this.player.draw();
 
       if (this.player.reset) {
         if (this.pixelRatio >= 3) {
@@ -333,6 +342,9 @@ class Game {
 
           if (this.keys.d.pressed) {
             this.background.moveLeft();
+            this.backgroundclouds.moveLeft();
+            this.backgroundbackhills.moveLeft();
+            this.backgroundhills.moveLeft();
             this.platforms.forEach((platform) => {
               platform.moveLeft();
             });
@@ -341,6 +353,9 @@ class Game {
             });
           } else if (this.keys.a.pressed) {
             this.background.moveRight();
+            this.backgroundclouds.moveRight();
+            this.backgroundbackhills.moveRight();
+            this.backgroundhills.moveRight();
             this.platforms.forEach((platform) => {
               platform.moveRight();
             });
@@ -349,6 +364,9 @@ class Game {
             });
           } else if (this.lBtn.active) {
             this.background.moveRight();
+            this.backgroundclouds.moveRight();
+            this.backgroundbackhills.moveRight();
+            this.backgroundhills.moveRight();
             this.platforms.forEach((platform) => {
               platform.moveRight();
             });
@@ -357,6 +375,9 @@ class Game {
             });
           } else if (this.rBtn.active) {
             this.background.moveLeft();
+            this.backgroundclouds.moveLeft();
+            this.backgroundbackhills.moveLeft();
+            this.backgroundhills.moveLeft();
             this.platforms.forEach((platform) => {
               platform.moveLeft();
             });
