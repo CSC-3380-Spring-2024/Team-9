@@ -12,8 +12,14 @@ class Game {
     this.player = new Player(this);
     this.lastKey;
     this.lastButton;
-    this.lives;
-    this.coins = [];
+    this.lives = 3;
+    this.coins = [
+      new Coins(this, 700, 380),
+      new Coins(this, 1000, 100),
+      new Coins(this, 1300, 250),
+      new Coins(this, 1700, 310),
+      new Coins(this, 2000, 180)
+    ];
     this.platforms = [
       new Platform(this, 0, 550, 700, 170),
       new Platform(this, 699, 550, 700, 170),
@@ -21,11 +27,12 @@ class Game {
     ];
     this.gravity;
 
-    this.start;
+    //this.start;
+    this.start = false;
     this.startButton = new StartButton(this, 500, 0, 300, 60, 40);
     this.gameOverButton = new gameOverButton(this, 300, 60, 40);
 
-    this.score;
+    this.score = 0;
     this.orientationMessage = document.createElement('div');
     this.orientationMessage.style.color = 'black';
     this.orientationMessage.innerText = 'Please rotate your device to landscape mode.';
@@ -159,14 +166,14 @@ class Game {
     }
   }
   init() {
-    this.score = 0;
-    this.coins = [
+    //this.score = 0;
+    /*this.coins = [
       new Coins(this, 700, 380),
       new Coins(this, 1000, 100),
       new Coins(this, 1300, 250),
       new Coins(this, 1700, 310),
       new Coins(this, 2000, 180)
-    ];
+    ];*/
     this.background.resize();
     this.platforms.forEach((platform) => {
       platform.resize();
@@ -195,8 +202,8 @@ class Game {
     this.gravity = 1.5 * this.ratio;
 
     this.startButton.resize();
-    this.start = false;
-    this.resetLives();
+    //this.start = false;
+    //this.resetLives();
 
     this.gameOverButton.resize();
 
@@ -435,6 +442,14 @@ class Game {
 
       if (this.player.scaledY > this.height) {
         this.player.reset = true;
+        this.background.resizeXPos();
+        this.player.resizeXPos();
+        this.platforms.forEach((platform) => {
+          platform.resizeXYPos();
+        });
+        this.coins.forEach((coin) => {
+          coin.resizeXPos();
+        });
         this.init();
         this.lives--;
       }
@@ -458,6 +473,12 @@ class Game {
     else {
       this.startButton.draw();
       if (this.mouse.pressed && this.isClickedOn(this.mouse, this.startButton)) {
+        this.platforms.forEach((platform) => {
+          platform.resizeXYPos();
+        });
+        this.coins.forEach((coin) => {
+          coin.resizeXPos();
+        });
         this.start = true;
       }
     }
