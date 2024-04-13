@@ -9,9 +9,14 @@ class BackgroundHills {
     this.position = {
       x: 0
     };
+    this.changedX = this.position.x;
     this.speed = {
       x: 0
     };
+  }
+
+  update() {
+    this.changedX = this.position.x / this.game.ratio;
   }
 
   draw() {
@@ -31,14 +36,16 @@ class BackgroundHills {
   resize() {
     this.scaledWidth = this.width * this.game.ratio;
     this.scaledHeight = this.height * this.game.ratio;
-    this.position.x = 0;
+    this.position.x = this.changedX * this.game.ratio;
   }
 
   moveLeft() {
     this.position.x -= 4 * this.game.ratio;
+    this.changedX = this.position.x / this.game.ratio;
   }
 
   moveRight() {
     this.position.x += 4 * this.game.ratio;
+    this.changedX = this.position.x / this.game.ratio;
   }
 }
