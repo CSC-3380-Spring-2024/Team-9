@@ -28,6 +28,10 @@ class Game {
       new Platform(this, 502, 550, 503, 251, 502, 562, 503, 251),
       new Platform(this, 503 * 2 - 2, 550, 503, 251, 503 * 2 - 2, 562, 503, 251)
     ];
+    this.floatingPlatforms = [
+      new FloatingPlatform(this, 900, 400, 176, 68, 900, 415, 176, 50),
+      new FloatingPlatform(this, 1800, 400, 176, 68, 1800, 415, 176, 50)
+    ];
     this.gravity;
 
     //this.start;
@@ -181,6 +185,9 @@ class Game {
     this.backgroundclouds.resize();
     this.backgroundbackhills.resize();
     this.backgroundhills.resize();
+    this.floatingPlatforms.forEach((floatingPlatform) => {
+      floatingPlatform.resize();
+    });
     this.platforms.forEach((platform) => {
       platform.resize();
     });
@@ -289,6 +296,11 @@ class Game {
       this.player.update();
       this.player.draw();
 
+      this.floatingPlatforms.forEach((floatingPlatform) => {
+        floatingPlatform.update();
+        floatingPlatform.draw();
+      });
+
       this.platforms.forEach((platform) => {
         platform.update();
         platform.draw();
@@ -350,6 +362,9 @@ class Game {
             this.backgroundclouds.moveLeft();
             this.backgroundbackhills.moveLeft();
             this.backgroundhills.moveLeft();
+            this.floatingPlatforms.forEach((floatingPlatform) => {
+              floatingPlatform.moveLeft();
+            });
             this.platforms.forEach((platform) => {
               platform.moveLeft();
             });
@@ -361,6 +376,9 @@ class Game {
             this.backgroundclouds.moveRight();
             this.backgroundbackhills.moveRight();
             this.backgroundhills.moveRight();
+            this.floatingPlatforms.forEach((floatingPlatform) => {
+              floatingPlatform.moveRight();
+            });
             this.platforms.forEach((platform) => {
               platform.moveRight();
             });
@@ -372,6 +390,9 @@ class Game {
             this.backgroundclouds.moveRight();
             this.backgroundbackhills.moveRight();
             this.backgroundhills.moveRight();
+            this.floatingPlatforms.forEach((floatingPlatform) => {
+              floatingPlatform.moveRight();
+            });
             this.platforms.forEach((platform) => {
               platform.moveRight();
             });
@@ -383,6 +404,9 @@ class Game {
             this.backgroundclouds.moveLeft();
             this.backgroundbackhills.moveLeft();
             this.backgroundhills.moveLeft();
+            this.floatingPlatforms.forEach((floatingPlatform) => {
+              floatingPlatform.moveLeft();
+            });
             this.platforms.forEach((platform) => {
               platform.moveLeft();
             });
@@ -468,6 +492,12 @@ class Game {
           this.player.hitBoxPosition.x = 88.8 * this.ratio;
         }
       }
+
+      this.floatingPlatforms.forEach((floatingPlatform) => {
+        if (this.checkCollision(this.player, floatingPlatform)) {
+          this.player.speed.y = 0;
+        }
+      });
       
       this.platforms.forEach((platform) => {
         if (this.checkCollision(this.player, platform)) {
@@ -482,6 +512,9 @@ class Game {
         this.backgroundclouds.resizeXPos();
         this.backgroundbackhills.resizeXPos();
         this.backgroundhills.resizeXPos();
+        this.floatingPlatforms.forEach((floatingPlatform) => {
+          floatingPlatform.resizeXYPos();
+        });
         this.platforms.forEach((platform) => {
           platform.resizeXYPos();
         });
@@ -516,6 +549,9 @@ class Game {
         this.backgroundclouds.resizeXPos();
         this.backgroundbackhills.resizeXPos();
         this.backgroundhills.resizeXPos();
+        this.floatingPlatforms.forEach((floatingPlatform) => {
+          floatingPlatform.resizeXYPos();
+        });
         this.platforms.forEach((platform) => {
           platform.resizeXYPos();
         });
