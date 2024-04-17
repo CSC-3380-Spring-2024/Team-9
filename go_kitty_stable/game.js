@@ -297,9 +297,9 @@ class Game {
   render(currentTime) {
     const deltaTime = currentTime - this.lastFrameTime;
     this.frameCount++;
-    if (deltaTime >= 360) {
+    if (deltaTime >= 500) {
       console.log("Frames rendered in the last second:", this.frameCount);
-      if (this.frameCount > 11) {
+      if (this.frameCount > 20) {
         this.isLowPowerMode = false;
       } else {
         this.isLowPowerMode = true;
