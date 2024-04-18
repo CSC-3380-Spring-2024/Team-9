@@ -107,7 +107,7 @@ class Player {
 
   jump() {
     if (!this.isJumping && this.speed.y === 0) {
-      this.speed.y = -30 * this.game.ratio;
+      this.speed.y = -25 * this.game.ratio;
       this.isJumping = true;
     }
   }

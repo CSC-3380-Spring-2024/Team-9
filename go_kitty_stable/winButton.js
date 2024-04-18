@@ -1,10 +1,6 @@
-class LowPowerModeScreen {
-  constructor(game, x, y, width, height, fontSize) {
+class winButton {
+  constructor(game, width, height, fontSize) {
     this.game = game;
-    this.position = {
-      x: x,
-      y: y,
-    };
     this.width = width;
     this.height = height;
     this.scaledX;
@@ -13,14 +9,12 @@ class LowPowerModeScreen {
     this.scaledHeight;
     this.fontSize = fontSize;
     this.scaledFontSize;
-    this.image = document.getElementById('lowPowerModeSymbol')
   }
 
   draw() {
-    this.game.ctx.fillStyle = 'black';
+    this.game.ctx.fillStyle = 'yellow';
     this.game.ctx.fillRect(this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
-    //this.drawText();
-    this.game.ctx.drawImage(this.image, this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight)
+    this.drawText();
   }
   drawText() {
     this.game.ctx.save();
@@ -28,10 +22,10 @@ class LowPowerModeScreen {
     this.game.ctx.font = `bold ${this.scaledFontSize}px Poppins, sans-serif`;
     const centerX = this.scaledX + (this.scaledWidth / 2);
     const centerY = this.scaledY + (this.scaledHeight / 2);
-    const textWidth = this.game.ctx.measureText('LOW POWER MODE ENABLED').width;
+    const textWidth = this.game.ctx.measureText('YOU WIN').width;
     const textX = centerX - (textWidth / 2);
     const textY = centerY + (this.scaledFontSize / 2);
-    this.game.ctx.fillText('LOW POWER MODE ENABLED', textX, textY);
+    this.game.ctx.fillText('YOU WIN', textX, textY);
     this.game.ctx.restore();
   }
   resize() {

@@ -1,4 +1,4 @@
-class Platform {
+class Castle {
   constructor(game, x, y, width, height, hitBoxX, hitBoxY, hitBoxWidth, hitBoxHeight) {
     this.game = game;
     this.position = {
@@ -23,7 +23,7 @@ class Platform {
     this.width = width;
     this.height = height;
     this.scaledWidth;
-    this.image = document.getElementById('platform');
+    this.image = document.getElementById('castle');
     this.scaledHeight;
   }
 
@@ -33,9 +33,11 @@ class Platform {
   }
 
   draw() {
-    //this.game.ctx.fillStyle = 'blue';
+    /*
+    this.game.ctx.fillStyle = 'blue';
     
-    //this.game.ctx.fillRect(this.hitBoxX, this.hitBoxY, this.hitBoxSWidth, this.hitBoxSHeight);
+    this.game.ctx.fillRect(this.hitBoxX, this.hitBoxY, this.hitBoxSWidth, this.hitBoxSHeight);
+    */
     
     this.game.ctx.drawImage(this.image, this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
   }

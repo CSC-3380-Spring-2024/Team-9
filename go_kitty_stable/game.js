@@ -37,12 +37,14 @@ class Game {
       new FloatingPlatform(this, 2300, 400, 176, 68, 2300, 415, 176, 50),
     ];
 
-    this.castle = new Castle(this, 3700, 163, 400, 400, 3700, 163, 400, 400);
+    this.castle = new Castle(this, 3700, 163, 400, 400, 3726, 187, 373, 400);
     this.gravity;
 
     this.start = false;
+    this.win = false;
     this.startButton = new StartButton(this, 500, 0, 300, 60, 40);
     this.gameOverButton = new gameOverButton(this, 300, 60, 40);
+    this.winButton = new winButton(this, 300, 60, 40)
 
     this.score = 0;
     this.orientationMessage = document.createElement('div');
@@ -83,7 +85,7 @@ class Game {
     this.controller.addButton(this.rBtn);
     this.controller.addButton(this.jBtn);
 
-    this.lowPowerMode = new LowPowerModeScreen(this, 500, 0, 700, 60, 40);
+    this.lowPowerMode = new LowPowerModeScreen(this, 0, 0, 1700, 720, 40);
     this.isLowerPowerMode = false;
     this.resize(window.innerWidth, window.innerHeight);
 
@@ -94,7 +96,12 @@ class Game {
     window.addEventListener('keydown', (event) => {
       switch (event.key) {
         case ' ':
-          this.player.jump();
+          if (this.checkIfAtEnd(this.player, this.castle)) {
+            this.win = true;
+          } else {
+            this.player.jump();
+          }
+          //this.player.jump();
           break;
         
         case 'd':
@@ -143,7 +150,12 @@ class Game {
       this.mouse.pressed = true;
       this.controller.touchStart(e);
       if (this.jBtn.active) {
-        this.player.jump();
+        if (this.checkIfAtEnd(this.player, this.castle)) {
+          this.win = true;
+        } else {
+          this.player.jump();
+        }
+        //this.player.jump();
       }
       if (this.rBtn.active) {
         this.lastButton = 'right';
@@ -237,6 +249,7 @@ class Game {
 
     this.lowPowerMode.resize();
     this.startButton.resize();
+    this.winButton.resize();
     //this.start = false;
     //this.resetLives();
     this.gameOverButton.resize();
@@ -256,6 +269,11 @@ class Game {
   checkCollision(player, platform) {
     return (
       player.hitBoxY + player.hitBoxHeight <= platform.hitBoxY && player.hitBoxY + player.hitBoxHeight + player.speed.y >= platform.hitBoxY && player.hitBoxX + player.hitBoxWidth >= platform.hitBoxX && player.hitBoxX <= platform.hitBoxX + platform.hitBoxSWidth
+    );
+  }
+  checkIfAtEnd(player, castle) {
+    return (
+      player.hitBoxX < castle.hitBoxX + castle.hitBoxSWidth && player.hitBoxX + player.hitBoxWidth > castle.hitBoxX && player.hitBoxY < castle.hitBoxY + castle.hitBoxSHeight && player.hitBoxY + player.hitBoxHeight > castle.hitBoxY
     );
   }
   isCollected(a, b) {
@@ -279,9 +297,11 @@ class Game {
     this.ctx.font = `bold ${33 * this.ratio}px Poppins, sans-serif`;
     this.ctx.fillText(`score: ${this.score}`, 40 * this.ratio, 80 * this.ratio);
     for (let i = 0; i < this.lives; i++) {
+      /*
       this.ctx.fillStyle = 'orange';
-      this.ctx.fillRect((60 + 90 * i) * this.ratio, 100 * this.ratio, 64 * this.ratio, 64 * this.ratio);
-      //this.ctx.drawImage(document.getElementById('lives'), (60 + 50 * i) * this.ratio, 100 * this.ratio, 32 * this.ratio, 32 * this.ratio);
+      this.ctx.fillRect((60 + 60 * i) * this.ratio, 100 * this.ratio, 64 * this.ratio, 64 * this.ratio);
+      */
+      this.ctx.drawImage(document.getElementById('lives'), (60 + 60 * i) * this.ratio, 100 * this.ratio, 64 * this.ratio, 64 * this.ratio);
     }
     this.ctx.restore();
   }
@@ -295,10 +315,11 @@ class Game {
     return val;
   }
   render(currentTime) {
+    //console.log(this.win);
     const deltaTime = currentTime - this.lastFrameTime;
     this.frameCount++;
     if (deltaTime >= 500) {
-      console.log("Frames rendered in the last second:", this.frameCount);
+      //console.log("Frames rendered in the last second:", this.frameCount);
       if (this.frameCount > 20) {
         this.isLowPowerMode = false;
       } else {
@@ -312,7 +333,7 @@ class Game {
       this.handleOrientationChange();
     }
     if (!this.checkLowPowerMode()) {
-      if (this.start && this.lives >= 1) {
+      if (this.start && this.lives >= 1 && !this.win) {
         this.background.update();
         this.background.draw();
         this.backgroundclouds.update();
@@ -585,6 +606,34 @@ class Game {
       else if (this.start && this.lives < 1) {
         this.gameOverButton.draw();
         if (this.mouse.pressed && this.isClickedOn(this.mouse, this.gameOverButton)) {
+          this.resetLives();
+          this.score = 0;
+          this.resetCoins();
+          //this.init();
+          this.background.resizeXPos();
+          this.backgroundclouds.resizeXPos();
+          this.backgroundbackhills.resizeXPos();
+          this.backgroundhills.resizeXPos();
+          this.castle.resizeXYPos();
+          this.floatingPlatforms.forEach((floatingPlatform) => {
+            floatingPlatform.resizeXYPos();
+          });
+          this.platforms.forEach((platform) => {
+            platform.resizeXYPos();
+          });
+          this.controller.buttons.forEach(button => {
+            button.resizeButtons();
+          });
+          this.player.resizeXPos();
+          this.coins.forEach((coin) => {
+            coin.resizeXPos();
+          });
+        }
+      }
+      else if (this.start && this.lives >= 1 && this.win) {
+        this.winButton.draw();
+        if (this.mouse.pressed && this.isClickedOn(this.mouse, this.winButton)) {
+          this.win = false;
           this.resetLives();
           this.score = 0;
           this.resetCoins();
