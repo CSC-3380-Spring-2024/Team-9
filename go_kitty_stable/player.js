@@ -3,8 +3,9 @@ class Player {
     this.game = game;
     this.position = {
       x: 100,
-      y: 100
+      y: 200
     };
+    this.changedX = this.position.x;
     this.speed = {
       x: 0,
       y: 0
@@ -13,13 +14,14 @@ class Player {
     this.height = 70;
     this.hitBoxPosition = {
       x: 188,
-      y: 168
+      y: 268
     };
+    this.changedhitBoxPositionX = this.hitBoxPosition.x;
     this.hitBoxWidth;
     this.hitBoxHeight;
     this.hitBoxX;
     this.hitBoxY;
-    this.scaledX;
+    this.scaledX = this.position.x * this.game.ratio;
     this.scaledY;
     this.scaledWidth;
     this.scaledHeight;
@@ -56,6 +58,7 @@ class Player {
     this.currentCollisionY;
     this.currentCircleX = 0.77;
     this.currentCircleY = 0.42;
+    this.collisionRadius = 40 * this.game.ratio;
     this.reset = false;
   }
 
@@ -64,7 +67,6 @@ class Player {
     this.game.ctx.fillStyle = 'yellow';
     this.game.ctx.fillRect(this.hitBoxX, this.hitBoxY, this.hitBoxWidth, this.hitBoxHeight);
     */
-    
     
     
     this.game.ctx.drawImage(this.currentSprite, this.currentSpriteWidth * this.frames, this.currentSpriteY, this.currentSpriteWidth, this.currentSpriteHeight, this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
@@ -84,9 +86,11 @@ class Player {
       this.frames = 0;
     }
     this.scaledX += this.speed.x;
+    this.changedX = this.scaledX / this.game.ratio;
     this.scaledY += this.speed.y;
     this.hitBoxX = this.scaledX + this.hitBoxPosition.x;
     this.hitBoxY += this.speed.y;
+    //this.changedhitBoxPositionX = this.hitBoxX - this.scaledX;
     this.currentCollisionX = this.scaledX + this.scaledWidth * this.currentCircleX;
     this.currentCollisionY = this.scaledY + this.scaledHeight * this.currentCircleY;
     if (this.speed.y === 0) {
@@ -103,7 +107,7 @@ class Player {
 
   jump() {
     if (!this.isJumping && this.speed.y === 0) {
-      this.speed.y = -30 * this.game.ratio;
+      this.speed.y = -25 * this.game.ratio;
       this.isJumping = true;
     }
   }
@@ -120,7 +124,8 @@ class Player {
     this.speed.x = 0;
   }
 
-  resize() {
+  resizeXPos() {
+    this.scaledX = this.position.x * this.game.ratio;
     this.frames = 0;
     
     this.currentSprite = this.sprites.stand.right;
@@ -135,6 +140,31 @@ class Player {
     this.scaledWidth = this.currentSpriteWidth * this.game.ratio;
     this.scaledHeight = this.currentSpriteHeight * this.game.ratio;
     this.scaledX = this.position.x * this.game.ratio;
+    this.scaledY = this.position.y * this.game.ratio;
+
+    this.hitBoxWidth = this.width * this.game.ratio;
+    this.hitBoxHeight = this.height * this.game.ratio;
+    this.hitBoxPosition.x = 88.8 * this.game.ratio;
+    //this.hitBoxX = this.hitBoxPosition.x * this.game.ratio;
+    this.hitBoxY = this.hitBoxPosition.y * this.game.ratio;
+  }
+
+  resize() {
+    this.frames = 0;
+    
+    this.currentSprite = this.sprites.stand.right;
+    this.currentSpriteX = this.sprites.stand.x;
+    this.currentSpriteY = this.sprites.stand.y;
+    this.currentSpriteWidth = this.sprites.stand.width;
+    this.currentSpriteHeight = this.sprites.stand.height;
+    this.currentCircleX = 0.77;
+    this.collisionRadius = 40 * this.game.ratio;
+    
+    
+    this.scaledWidth = this.currentSpriteWidth * this.game.ratio;
+    this.scaledHeight = this.currentSpriteHeight * this.game.ratio;
+    //this.scaledX = this.position.x * this.game.ratio;
+    this.scaledX = this.changedX * this.game.ratio;
     this.scaledY = this.position.y * this.game.ratio;
 
     this.hitBoxWidth = this.width * this.game.ratio;
