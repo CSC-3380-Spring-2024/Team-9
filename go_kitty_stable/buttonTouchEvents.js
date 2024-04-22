@@ -14,6 +14,7 @@ class Button {
     this.initialX = x;
     this.initialY = y;
     this.name = name;
+    this.image;
   }
 
   containsPoint(x, y) {
@@ -21,8 +22,16 @@ class Button {
   }
 
   draw() {
-    this.game.ctx.fillStyle = this.color;
-    this.game.ctx.fillRect(this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
+    //this.game.ctx.fillStyle = this.color;
+    //this.game.ctx.fillRect(this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
+    if (this.name === 'left') {
+      this.image = document.getElementById('leftButton');
+    } else if (this.name === 'right') {
+      this.image = document.getElementById('rightButton');
+    } else if (this.name === 'jump') {
+      this.image = document.getElementById('jumpButton');
+    }
+    this.game.ctx.drawImage(this.image, this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
   }
 
   resize() {

@@ -13,12 +13,16 @@ class StartButton {
     this.scaledHeight;
     this.fontSize = fontSize;
     this.scaledFontSize;
+    this.image = document.getElementById('startButton');
   }
 
   draw() {
+    /*
     this.game.ctx.fillStyle = 'yellow';
     this.game.ctx.fillRect(this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
     this.drawText();
+    */
+    this.game.ctx.drawImage(this.image, this.scaledX, this.scaledY, this.scaledWidth, this.scaledHeight);
   }
   drawText() {
     this.game.ctx.save();
